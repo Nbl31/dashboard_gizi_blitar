@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<title>Dashboard Gizi Kabupaten Blitar</title>
+
+<style>
+
+.dashboard-card{
+border-radius:12px;
+transition:0.3s;
+}
+
+.dashboard-card:hover{
+transform:translateY(-5px);
+}
+
+.kat-sr td{
+background:#1fa971 !important;
+color:white !important;
+}
+
+.kat-r td{
+background:#6ccf9c !important;
+}
+
+.kat-m td{
+background:#f4c542 !important;
+}
+
+.kat-t td{
+background:#f28c28 !important;
+color:white !important;
+}
+
+.kat-st td{
+background:#d90429 !important;
+color:white !important;
+}
+
+body{
+font-family:Arial;
+margin:20px;
+background:#c9e1fd !important;
+}
+
+#map{
+height:500px;
+width: 100%;
+}
+
+#table-container{
+height:500px;
+overflow:auto;
+}
+
+#table-container thead th{
+position: stick;
+top: 0;
+background: rgb(121, 160, 233);
+z-index: 2;
+}
+
+th,td{
+border:1px solid #ccc;
+padding:6px;
+text-align:center;
+font-size:12px;
+white-space:nowrap;
+}
+
+th{
+background:#f2f2f2;
+position:sticky;
+top:0;
+}
+
+.card {
+    border-radius:15px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+</style>
+
+<link rel="stylesheet" href="style.css">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<nav class="navbar navbar-light bg-white shadow-sm">
+  <div class="container">
+    <span class="navbar-brand mb-0 h1"></span>
+  </div>
+</nav>
+
+<section class="container mt-5 text-center">
+
+<h1 class="fw-bold">Dashboard Monitoring Gizi</h1>
+
+<h2 class="text-muted">Kabupaten Blitar</h2>
+
+<p class="mt-3 text-muted">
+Dashboard ini menyajikan visualisasi data status gizi balita di Kabupaten Blitar 
+sebagai sarana pemantauan kondisi gizi serta mendukung pengambilan keputusan 
+dalam upaya peningkatan kesehatan anak.
+</p>
+
+</section>
+
+<section class="container mt-4 text-center">
+
+<div class="mb-3">
+
+<button type="button" class="btn btn-primary tahun-btn" data-tahun="2024">2024</button>
+<button type="button" class="btn btn-outline-primary tahun-btn" data-tahun="2025">2025</button>
+<button type="button" class="btn btn-outline-primary tahun-btn" data-tahun="2026">2026</button>
+
+</div>
+
+<h3 id="judulDashboard">
+Besaran Masalah Gizi Kabupaten Blitar Tahun
+<span id="tahunJudul"></span>
+</h3>
+
+<div class="row text-center g-4">
+
+<div class="col-md-3">
+<div class="card dashboard-card shadow-sm">
+<div class="card-body">
+
+<h6>Stunting</h6>
+<p class="indikator-desc">Pendek + Sangat Pendek</p>
+
+<h2 id="stuntingValue">0%</h2>
+<p id="stuntingTrend" class="trend"></p>
+
+<table class="table table-sm kategori-table">
+<tr><th>Kategori</th><th>Rentang</th></tr>
+<tr id="stunting-sr"><td>Sangat Rendah</td><td>&lt; 10</td></tr>
+<tr id="stunting-r"><td>Rendah</td><td>10 - &lt; 15</td></tr>
+<tr id="stunting-m"><td>Medium</td><td>15 - &lt; 20</td></tr>
+<tr id="stunting-t"><td>Tinggi</td><td>20 - &lt; 30</td></tr>
+<tr id="stunting-st"><td>Sangat Tinggi</td><td>≥ 30</td></tr>
+</table>
+
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card dashboard-card shadow-sm">
+<div class="card-body">
+
+<h6>Wasting</h6>
+<p class="indikator-desc">Kurus + Sangat Kurus</p>
+
+<h2 id="wastingValue">0%</h2>
+<p id="wastingTrend" class="trend"></p>
+
+<table class="table table-sm kategori-table">
+<tr><th>Kategori</th><th>Rentang</th></tr>
+<tr id="wasting-sr"><td>Sangat Rendah</td><td>&lt;2.5</td></tr>
+<tr id="wasting-r"><td>Rendah</td><td>2.5 - &lt;5</td></tr>
+<tr id="wasting-m"><td>Medium</td><td>5 - &lt;10</td></tr>
+<tr id="wasting-t"><td>Tinggi</td><td>10 - &lt;15</td></tr>
+<tr id="wasting-st"><td>Sangat Tinggi</td><td>≥15</td></tr>
+</table>
+
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card dashboard-card shadow-sm">
+<div class="card-body">
+
+<h6>Underweight</h6>
+<p class="indikator-desc">Gizi Kurang + Gizi Buruk</p>
+
+<h2 id="underweightValue">0%</h2>
+<p id="underweightTrend" class="trend"></p>
+
+<table class="table table-sm kategori-table">
+<tr><th>Kategori</th><th>Rentang</th></tr>
+<tr id="underweight-r"><td>Rendah</td><td>&lt;5</td></tr>
+<tr id="underweight-m"><td>Medium</td><td>5 - 10</td></tr>
+<tr id="underweight-t"><td>Tinggi</td><td>10 - 15</td></tr>
+<tr id="underweight-st"><td>Sangat Tinggi</td><td>≥15</td></tr>
+</table>
+
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card dashboard-card shadow-sm">
+<div class="card-body">
+
+<h6>Overweight</h6>
+<p class="indikator-desc">Berisiko Gizi Lebih + Obesitas</p>
+
+<h2 id="overweightValue">0%</h2>
+<p id="overweightTrend" class="trend"></p>
+
+<table class="table table-sm kategori-table">
+<tr><th>Kategori</th><th>Rentang</th></tr>
+<tr id="overweight-sr"><td>Sangat Rendah</td><td>&lt;2.5</td></tr>
+<tr id="overweight-r"><td>Rendah</td><td>2.5 - &lt;5</td></tr>
+<tr id="overweight-m"><td>Medium</td><td>5 - &lt;10</td></tr>
+<tr id="overweight-t"><td>Tinggi</td><td>10 - &lt;15</td></tr>
+<tr id="overweight-st"><td>Sangat Tinggi</td><td>≥15</td></tr>
+</table>
+
+</div>
+</div>
+</div>
+
+</div>
+<p id="catatanBulan" style="font-size:14px;color:#666;"></p>
+</section>
+
+
+<script>
+
+let semuaData = []
+
+let dataStunting=[]
+
+let kecamatan="all"
+let puskesmas="all"
+let desa="all"
+
+let indikator="all"
+
+// 🔥 FIX: SAMAKAN TIPE NUMBER
+let tahunAktif=2024
+let tahunAktif1=2024
+
+let geoLayer
+
+fetch("data_stunting.json")
+.then(res => res.json())
+.then(data => {
+
+semuaData = data
+
+updateDashboard(2024)
+
+})
+
+function rataRata(data,tahun,kolom){
+
+const filtered = data.filter(d =>
+d.Tahun == tahun && d.Level == "Kecamatan"
+)
+
+const values = filtered
+.map(d =>parseFloat(String(d[kolom]).replace(",",".")))
+.filter(v => !isNaN(v) && v > 0) 
+
+if(values.length == 0) return 0
+
+const total = values.reduce((a,b)=>a+b,0)
+
+return total / values.length
+
+}
+
+function updateDashboard(tahun){
+
+tahunAktif = parseInt(tahun)
+
+document.getElementById("tahunJudul").innerText = tahunAktif
+
+const prevYear = tahunAktif - 1
+
+const stuntingNow = rataRata(semuaData,tahunAktif,"%Stunting")
+const wastingNow = rataRata(semuaData,tahunAktif,"%Wasting")
+const underNow = rataRata(semuaData,tahunAktif,"%Underweight")
+const overNow = rataRata(semuaData,tahunAktif,"%Overweight")
+
+const stuntingPrev = rataRata(semuaData,prevYear,"%Stunting")
+const wastingPrev = rataRata(semuaData,prevYear,"%Wasting")
+const underPrev = rataRata(semuaData,prevYear,"%Underweight")
+const overPrev = rataRata(semuaData,prevYear,"%Overweight")
+
+updateCard("stunting",stuntingNow,stuntingPrev,tahunAktif)
+updateCard("wasting",wastingNow,wastingPrev,tahunAktif)
+updateCard("underweight",underNow,underPrev,tahunAktif)
+updateCard("overweight",overNow,overPrev,tahunAktif)
+
+}
+
+function updateCard(nama,now,prev,tahun){
+
+const value = document.getElementById(nama+"Value")
+const trend = document.getElementById(nama+"Trend")
+const nowNum = parseFloat(now)
+const prevNum = parseFloat(prev)
+
+const diff = (nowNum - prevNum) * 100
+const diffAbs = Math.abs(diff)
+
+
+value.innerText = (now*100).toFixed(2) + "%"
+
+if(tahun == 2024){
+
+trend.innerText = ""
+
+}else{
+
+let arrow="➖"
+let text="Stabil"
+
+if(now > prev){
+arrow="📈"
+text="Naik " + diffAbs.toFixed(2)+"%"
+}
+else if(now < prev){
+arrow="📉"
+text="Turun " + diffAbs.toFixed(2)+"%"
+}
+
+trend.innerText = arrow + " " + text
+
+}
+
+const rows = document.querySelectorAll("[id^='"+nama+"-']")
+rows.forEach(r=>{
+r.classList.remove("kat-sr","kat-r","kat-m","kat-t","kat-st")
+})
+
+let kategori=""
+
+const persen = nowNum*100
+
+if(nama=="stunting"){
+
+if(persen<10) kategori="sr"
+else if(persen<15) kategori="r"
+else if(persen<20) kategori="m"
+else if(persen<30) kategori="t"
+else kategori="st"
+
+}
+
+else if(nama=="wasting" || nama=="overweight"){
+
+if(persen<2.5) kategori="sr"
+else if(persen<5) kategori="r"
+else if(persen<10) kategori="m"
+else if(persen<15) kategori="t"
+else kategori="st"
+
+}
+
+else if(nama=="underweight"){
+
+if(persen<5) kategori="r"
+else if(persen<10) kategori="m"
+else if(persen<15) kategori="t"
+else kategori="st"
+
+}
+
+const row = document.getElementById(nama+"-"+kategori)
+
+if(row){
+row.classList.add("kat-"+kategori)
+}
+
+if(tahun==2026){
+
+const bulan = cekBulanTerakhir(semuaData,2026)
+
+if(bulan){
+
+document.getElementById("catatanBulan").innerText =
+"Catatan: Data tahun 2026 tersedia sampai bulan "+bulan
+
+}
+
+}
+else{
+
+document.getElementById("catatanBulan").innerText=""
+
+}
+
+}
+
+document.querySelectorAll(".tahun-btn").forEach(btn=>{
+
+btn.addEventListener("click",function(){
+
+const tahun = this.getAttribute("data-tahun")
+
+tahunAktif = parseInt(tahun)
+tahunAktif1 = parseInt(tahun)
+
+document.querySelectorAll(".tahun-btn").forEach(b=>{
+b.classList.remove("btn-primary")
+b.classList.add("btn-outline-primary")
+})
+
+this.classList.remove("btn-outline-primary")
+this.classList.add("btn-primary")
+
+updateDashboard(tahun)
+updateSemua()
+
+})
+
+})
+
+function cekBulanTerakhir(data,tahun){
+
+const bulanList = [
+"Januari","Februari","Maret","April","Mei","Juni",
+"Juli","Agustus","September","Oktober","November","Desember"
+]
+
+let bulanTerakhir = ""
+ 
+bulanList.forEach(bulan=>{
+
+const adaData = data.some(d =>
+d.Tahun==tahun &&
+d.Bulan==bulan &&
+d.Level=="Kabupaten" &&
+parseFloat(String(d["%Stunting"]).replace(",","."))>0
+)
+
+if(adaData){
+
+bulanTerakhir = bulan
+
+}
+
+})
+
+return bulanTerakhir
+
+}
+
+
+</script>
+
+<section class="container mt-4">
+
+<h4 id="judulDashboard1" class="text-center mb-3">
+Penyebaran Masalah Gizi Kabupaten Blitar Tahun 2024
+</h4>
+
+<div class="row mb-3 justify-content-center">
+<div class="col-md-4">
+<select id="filterKecamatan11" class="form-select">
+<option value="all">Semua Kecamatan</option>
+</select>
+</div>
+</div>
+
+<div class="row">
+
+<div class="col-md-6">
+<div id="map"></div>
+</div>
+
+<div class="col-md-6">
+
+<div id="table-container" class="table-responsive">
+
+<table class="table table-bordered table-striped table-hover table-sm" style="min-width:1200px;">
+<thead>
+<tr>
+<th>Kecamatan</th>
+<th>Puskesmas</th>
+<th>Desa/Kelurahan</th>
+<th>D/S</th>
+
+<th>Sangat Kurang</th>
+<th>Kurang</th>
+<th>Berat Badan Normal</th>
+<th>Risiko Lebih</th>
+
+<th>Sangat Pendek</th>
+<th>Pendek</th>
+<th>Normal</th>
+<th>Tinggi</th>
+
+<th>Gizi Buruk</th>
+<th>Gizi Kurang</th>
+<th>Normal</th>
+<th>Risiko Gizi Lebih</th>
+<th>Gizi Lebih</th>
+<th>Obesitas</th>
+
+<th>%Stunting</th>
+<th>%Wasting</th>
+<th>%Underweight</th>
+<th>%Overweight</th>
+</tr>
+</thead>
+
+<tbody id="tabel-gizi"></tbody>
+
+</table>
+</div>
+</div>
+
+</div>
+
+</section>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+
+let map = L.map('map').setView([-8.1,112.2],10)
+
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap & Carto',
+    subdomains: 'abcd',
+    maxZoom: 19
+}).addTo(map)
+let geoLayers=[]
+let semuaData1=[]
+let dataStunting1=[]
+let modePeta="kecamatan"
+
+fetch("data_stunting.json")
+.then(res=>res.json())
+.then(data=>{
+semuaData1=data
+isiDropdown1()
+document.getElementById("filterKecamatan11").addEventListener("change", updateSemua)
+updateSemua()
+})
+
+function isiDropdown1(){
+let kecSet=new Set()
+
+semuaData1.forEach(d=>{
+if(d.Level=="Desa"){
+kecSet.add(d.Kecamatan)
+}
+})
+
+kecSet.forEach(v=>{
+filterKecamatan11.innerHTML+=`<option value="${v}">${v}</option>`
+})
+}
+
+function updateSemua(){
+
+let kec = document.getElementById("filterKecamatan11").value
+
+document.getElementById("judulDashboard1").innerText =
+"Penyebaran Masalah Gizi Kabupaten Blitar Tahun "+tahunAktif1
+
+modePeta = (kec=="all") ? "kecamatan" : "desa"
+
+dataStunting1 = semuaData1.filter(d=>{
+if(d.Level!="Desa") return false
+if(String(d.Tahun)!=String(tahunAktif1)) return false
+if(kec!="all" && d.Kecamatan!=kec) return false
+return true
+})
+
+gambarUlangPeta()
+updateTabel()
+
+}
+
+function gambarUlangPeta(){
+geoLayers.forEach(l=>map.removeLayer(l))
+geoLayers=[]
+
+if(modePeta=="kecamatan"){
+loadKecamatan()
+}else{
+loadDesa()
+}
+}
+
+function loadKecamatan(){
+fetch("kecamatan.geojson")
+.then(res=>res.json())
+.then(data=>{
+let layer=L.geoJSON(data,{
+style:styleKecamatan,
+onEachFeature:onEachKecamatan
+}).addTo(map)
+
+geoLayers.push(layer)
+map.fitBounds(layer.getBounds())
+})
+}
+
+function loadDesa(){
+let kec = filterKecamatan11.value
+
+fetch(kec+".geojson")
+.then(res=>res.json())
+.then(data=>{
+let layer=L.geoJSON(data,{
+style:styleDesa,
+onEachFeature:onEachDesa
+}).addTo(map)
+
+geoLayers.push(layer)
+map.fitBounds(layer.getBounds())
+})
+}
+
+function styleKecamatan(feature){
+let kec = feature.properties.WADMKC
+
+let total = hitungTotalKecamatan(kec)
+
+return{
+color:"#333",
+weight:1,
+fillColor:getColor(total),
+fillOpacity:0.7
+}
+}
+
+function styleDesa(feature){
+let desa = feature.properties.WADMKD
+
+let total = hitungTotalDesa(desa)
+
+return{
+color:"#333",
+weight:1,
+fillColor:getColor(total),
+fillOpacity:0.7
+}
+}
+
+function hitungTotalKecamatan(kec){
+let data = dataStunting1.filter(d=>d.Kecamatan==kec)
+let total=0
+data.forEach(d=>{
+total+=Number(d.Stunting||0)
+total+=Number(d.Wasting||0)
+total+=Number(d.Underweight||0)
+total+=Number(d.Overweight||0)
+})
+return total
+}
+
+function hitungTotalDesa(desa){
+let data=dataStunting1.filter(d=>
+normalisasi(d["DESA/KELURAHAN"])==normalisasi(desa)
+)
+let total=0
+data.forEach(d=>{
+total+=Number(d.Stunting||0)
+total+=Number(d.Wasting||0)
+total+=Number(d.Underweight||0)
+total+=Number(d.Overweight||0)
+})
+return total
+}
+
+function onEachKecamatan(feature,layer){
+let kec = feature.properties.WADMKC
+layer.bindTooltip("<b>"+kec+"</b><br>Total: "+hitungTotalKecamatan(kec))
+}
+
+function onEachDesa(feature,layer){
+let desa = feature.properties.WADMKD
+layer.bindTooltip("<b>"+desa+"</b><br>Total: "+hitungTotalDesa(desa))
+}
+
+function getColor(v){
+if(v > 5000) return "#08306b"
+if(v > 2000) return "#2171b5"
+if(v > 1000) return "#6baed6"
+if(v > 500) return "#c6dbef"
+return "#eff3ff"
+}
+
+function normalisasi(teks){
+return teks.toLowerCase().replace(/desa/g,'').replace(/kelurahan/g,'').replace(/\s/g,'').trim()
+}
+
+
+function updateTabel(){
+
+let dataTahunan = gabungDataTahunan(dataStunting1)
+buatTabel(dataTahunan)
+
+}
+
+function gabungDataTahunan(data){
+
+let hasil={}
+
+data.forEach(d=>{
+
+let key=d["Kecamatan"]+"_"+d["PUSKESMAS"]+"_"+d["DESA/KELURAHAN"]
+
+if(!hasil[key]){
+hasil[key]={
+"Kecamatan":d["Kecamatan"],
+"PUSKESMAS":d["PUSKESMAS"],
+"DESA/KELURAHAN":d["DESA/KELURAHAN"],
+
+"D/S":0,"bulan_ds":0,
+
+"Sangat Kurang":0,"Kurang":0,"Berat Badan Normal":0,"Risiko Lebih":0,
+"Sangat Pendek":0,"Pendek":0,"Normal":0,"Tinggi":0,
+"Gizi Buruk":0,"Gizi Kurang":0,"Normal_1":0,"Risiko Gizi Lebih":0,
+"Gizi Lebih":0,"Obesitas":0,
+
+"%Stunting":0,"%Wasting":0,"%Underweight":0,"%Overweight":0,
+"bulan_persen":0
+}
+}
+
+let row=hasil[key]
+
+let ds=toNumber(d["D/S"])
+if(ds>0){
+row["D/S"]+=ds
+row["bulan_ds"]++
+}
+
+row["Sangat Kurang"]+=toNumber(d["Sangat Kurang"])
+row["Kurang"]+=toNumber(d["Kurang"])
+row["Berat Badan Normal"]+=toNumber(d["Berat Badan Normal"])
+row["Risiko Lebih"]+=toNumber(d["Risiko Lebih"])
+
+row["Sangat Pendek"]+=toNumber(d["Sangat Pendek"])
+row["Pendek"]+=toNumber(d["Pendek"])
+row["Normal"]+=toNumber(d["Normal"])
+row["Tinggi"]+=toNumber(d["Tinggi"])
+
+row["Gizi Buruk"]+=toNumber(d["Gizi Buruk"])
+row["Gizi Kurang"]+=toNumber(d["Gizi Kurang"])
+row["Normal_1"]+=toNumber(d["Normal_1"])
+row["Risiko Gizi Lebih"]+=toNumber(d["Risiko Gizi Lebih"])
+row["Gizi Lebih"]+=toNumber(d["Gizi Lebih"])
+row["Obesitas"]+=toNumber(d["Obesitas"])
+
+let stunting=toNumber(d["%Stunting"])
+let wasting=toNumber(d["%Wasting"])
+let under=toNumber(d["%Underweight"])
+let over=toNumber(d["%Overweight"])
+
+if(stunting>0||wasting>0||under>0||over>0){
+row["%Stunting"]+=stunting
+row["%Wasting"]+=wasting
+row["%Underweight"]+=under
+row["%Overweight"]+=over
+row["bulan_persen"]++
+}
+
+})
+
+let finalData=Object.values(hasil)
+
+finalData.forEach(d=>{
+
+if(d["bulan_ds"]>0){
+d["D/S"]=(d["D/S"]/d["bulan_ds"]*100).toFixed(2)+" %"
+}else d["D/S"]=0
+
+if(d["bulan_persen"]>0){
+d["%Stunting"]=((d["%Stunting"]/d["bulan_persen"])*100).toFixed(2)+" %"
+d["%Wasting"]=((d["%Wasting"]/d["bulan_persen"])*100).toFixed(2)+" %"
+d["%Underweight"]=((d["%Underweight"]/d["bulan_persen"])*100).toFixed(2)+" %"
+d["%Overweight"]=((d["%Overweight"]/d["bulan_persen"])*100).toFixed(2)+" %"
+}else{
+d["%Stunting"]=0
+d["%Wasting"]=0
+d["%Underweight"]=0
+d["%Overweight"]=0
+}
+
+})
+
+return finalData
+}
+
+function buatTabel(data){
+
+let tbody=document.getElementById("tabel-gizi")
+
+let kolom=[
+"Kecamatan","PUSKESMAS","DESA/KELURAHAN","D/S",
+"Sangat Kurang","Kurang","Berat Badan Normal","Risiko Lebih",
+"Sangat Pendek","Pendek","Normal","Tinggi",
+"Gizi Buruk","Gizi Kurang","Normal_1","Risiko Gizi Lebih",
+"Gizi Lebih","Obesitas",
+"%Stunting","%Wasting","%Underweight","%Overweight"
+]
+
+let html=""
+
+data.forEach(d=>{
+html+="<tr>"
+kolom.forEach(k=>{
+let nilai=d[k]
+if(nilai==""||nilai==null) nilai=0
+html+="<td>"+nilai+"</td>"
+})
+html+="</tr>"
+})
+
+tbody.innerHTML=html
+}
+
+function toNumber(value){
+if(value===null||value===undefined||value==="") return 0
+return parseFloat(String(value).replace("%","").replace(",","."))
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+
+document.querySelectorAll(".tahun-btn").forEach(btn=>{
+
+btn.addEventListener("click",function(){
+
+const tahun = this.getAttribute("data-tahun")
+
+tahunAktif = parseInt(tahun)
+tahunAktif1 = parseInt(tahun)
+
+document.querySelectorAll(".tahun-btn").forEach(b=>{
+b.classList.remove("btn-primary")
+b.classList.add("btn-outline-primary")
+})
+
+this.classList.remove("btn-outline-primary")
+this.classList.add("btn-primary")
+
+updateDashboard(tahun)
+updateSemua()
+
+})
+
+})
+
+})
+
+</script>
+
+<section>
+<div class="container mt-4">
+<div class="card p-4">
+
+<h4 class="text-center mb-3">Tren Persentase Status Gizi</h4>
+
+<div class="row mb-3 justify-content-center">
+<div class="col-md-4">
+<select id="filterKecamatan1" class="form-select">
+<option value="all">Semua Kecamatan</option>
+</select>
+</div>
+</div>
+
+<canvas id="chartGizi"></canvas>
+
+<script>
+
+let semuaData2 = []
+let chart
+
+fetch("data_stunting.json")
+.then(res => res.json())
+.then(data => {
+
+    semuaData2 = data
+
+    isiDropdown()
+    initChart()
+    updateChart("all")
+
+})
+
+function isiDropdown(){
+
+    let setKec1 = new Set()
+
+    semuaData2.forEach(d=>{
+        if(d.Level == "Desa"){
+            setKec1.add(d.Kecamatan)
+        }
+    })
+
+    setKec1.forEach(k=>{
+        filterKecamatan1.innerHTML += `<option value="${k}">${k}</option>`
+    })
+
+}
+
+function initChart(){
+
+    const ctx = document.getElementById('chartGizi')
+
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['2024','2025','2026'],
+            datasets: []
+        },
+        options: {
+            responsive:true,
+            plugins:{
+                legend:{ position:'top' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let value = context.raw || 0
+                            return context.dataset.label + ': ' + (value * 100).toFixed(2) + '%'
+                        }
+                    }
+                }
+            },
+            scales:{
+                y:{
+                    beginAtZero:true,
+                    ticks:{
+                        callback: val => (val * 100).toFixed(2) + '%'
+                    }
+                }
+            }
+        }
+    })
+
+}
+
+function hitungData(kecamatan){
+
+    let hasil = {
+        stunting:[0,0,0],
+        wasting:[0,0,0],
+        underweight:[0,0,0],
+        overweight:[0,0,0],
+
+        count:[0,0,0]
+    }
+
+    semuaData2.forEach(d=>{
+
+        if(d.Level != "Desa") return
+        if(kecamatan != "all" && d.Kecamatan != kecamatan) return
+
+        let tahunIndex = {
+            "2024":0,
+            "2025":1,
+            "2026":2
+        }[String(d.Tahun)]
+
+        if(tahunIndex === undefined) return
+
+        let st = toNumber(d["%Stunting"])
+        let wa = toNumber(d["%Wasting"])
+        let un = toNumber(d["%Underweight"])
+        let ov = toNumber(d["%Overweight"])
+
+        if(st || wa || un || ov){
+
+            hasil.stunting[tahunIndex] += st
+            hasil.wasting[tahunIndex] += wa
+            hasil.underweight[tahunIndex] += un
+            hasil.overweight[tahunIndex] += ov
+
+            hasil.count[tahunIndex]++
+        }
+
+    })
+
+    for(let i=0;i<3;i++){
+        if(hasil.count[i] > 0){
+            hasil.stunting[i] /= hasil.count[i]
+            hasil.wasting[i] /= hasil.count[i]
+            hasil.underweight[i] /= hasil.count[i]
+            hasil.overweight[i] /= hasil.count[i]
+        }
+    }
+
+    return hasil
+
+}
+
+function updateChart(kecamatan){
+
+    let data = hitungData(kecamatan)
+
+    chart.data.datasets = [
+
+        {
+            label:'%Overweight',
+            data:data.overweight,
+            borderColor:'blue',
+            tension:0.3
+        },
+        {
+            label:'%Stunting',
+            data:data.stunting,
+            borderColor:'teal',
+            tension:0.3
+        },
+        {
+            label:'%Underweight',
+            data:data.underweight,
+            borderColor:'green',
+            tension:0.3
+        },
+        {
+            label:'%Wasting',
+            data:data.wasting,
+            borderColor:'darkgreen',
+            tension:0.3
+        }
+
+    ]
+
+    chart.update()
+
+}
+
+filterKecamatan1.addEventListener("change", function(){
+    updateChart(this.value)
+})
+
+function toNumber(val){
+    if(!val) return 0
+    return parseFloat(String(val).replace('%','').replace(',','.')) || 0
+}
+
+</script>
+</div>
+</div>
+
+</section>
+</body>
+</html>
