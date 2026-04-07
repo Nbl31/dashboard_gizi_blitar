@@ -593,7 +593,7 @@ loadDesa()
 }
 
 function loadKecamatan(){
-fetch("kecamatan.geojson")
+fetch("Kecamatan.geojson")
 .then(res=>res.json())
 .then(data=>{
 let layer=L.geoJSON(data,{
