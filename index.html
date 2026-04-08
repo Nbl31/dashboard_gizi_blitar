@@ -83,6 +83,39 @@ top:0;
     box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
+.leaflet-tooltip{
+white-space: normal !important;
+}
+
+.tooltip-container{
+display:grid;
+grid-template-columns:repeat(2,auto);
+gap:4px;
+}
+
+.tooltip-box{
+border-radius:5px;
+padding:2px 4px;
+font-size:9px;
+color:#fff;
+text-align:center;
+line-height:1.1;
+min-width:55px;
+}
+
+.tooltip-title{
+font-size:10px;
+font-weight:bold;
+margin-bottom:3px;
+display:block;
+text-align:center;
+}
+
+.tooltip-sr{ background:#1fa971; }
+.tooltip-r{ background:#6ccf9c; color:#333; }
+.tooltip-m{ background:#f4c542; color:#333; }
+.tooltip-t{ background:#f28c28; }
+.tooltip-st{ background:#d90429; }
 </style>
 
 <link rel="stylesheet" href="style.css">
@@ -240,7 +273,6 @@ let desa="all"
 
 let indikator="all"
 
-// 🔥 FIX: SAMAKAN TIPE NUMBER
 let tahunAktif=2024
 let tahunAktif1=2024
 
@@ -648,15 +680,44 @@ fillOpacity:0.7
 }
 }
 
-function hitungTotalKecamatan(kec){
-let data = dataStunting1.filter(d=>d.Kecamatan==kec)
+function rataRata1(data,tahun,field){
 let total=0
+let count=0
+
 data.forEach(d=>{
-total+=Number(d.Stunting||0)
-total+=Number(d.Wasting||0)
-total+=Number(d.Underweight||0)
-total+=Number(d.Overweight||0)
+if(String(d.Tahun)==String(tahun)){
+let val=toNumber(d[field])
+if(val>0){
+total+=val
+count++
+}
+}
 })
+
+return count>0 ? total/count : 0
+}
+
+function hitungTotalKecamatan(kec){
+let data = dataStunting1.filter(d => 
+  normalisasi(d.Kecamatan) == normalisasi(kec)
+)
+
+console.log("Jumlah baris:", data.length)
+
+let total = 0
+data.forEach(d => {
+  let jumlah =
+    Number(d.Stunting || 0) +
+    Number(d.Wasting || 0) +
+    Number(d.Underweight || 0) +
+    Number(d.Overweight || 0)
+
+  console.log(d.Bulan, jumlah)
+
+  total += jumlah
+})
+
+console.log("TOTAL:", total)
 return total
 }
 
@@ -674,14 +735,109 @@ total+=Number(d.Overweight||0)
 return total
 }
 
+function getKategori(nama,persen){
+
+let kategori=""
+
+
+if(nama=="stunting"){
+if(persen<10) kategori="sr"
+else if(persen<15) kategori="r"
+else if(persen<20) kategori="m"
+else if(persen<30) kategori="t"
+else kategori="st"
+}
+else if(nama=="wasting" || nama=="overweight"){
+if(persen<2.5) kategori="sr"
+else if(persen<5) kategori="r"
+else if(persen<10) kategori="m"
+else if(persen<15) kategori="t"
+else kategori="st"
+}
+else if(nama=="underweight"){
+if(persen<5) kategori="r"
+else if(persen<10) kategori="m"
+else if(persen<15) kategori="t"
+else kategori="st"
+}
+
+return kategori
+}
+
 function onEachKecamatan(feature,layer){
+
 let kec = feature.properties.WADMKC
-layer.bindTooltip("<b>"+kec+"</b><br>Total: "+hitungTotalKecamatan(kec))
+
+let semuaData = semuaData1.filter(d =>
+normalisasi(d.Kecamatan)==normalisasi(kec)
+)
+
+const stP = rataRata1(semuaData,tahunAktif1,"%Stunting")
+const waP = rataRata1(semuaData,tahunAktif1,"%Wasting")
+const unP = rataRata1(semuaData,tahunAktif1,"%Underweight")
+const ovP = rataRata1(semuaData,tahunAktif1,"%Overweight")
+
+layer.bindTooltip(`
+<span class="tooltip-title">${kec}</span>
+
+<div class="tooltip-container">
+
+<div class="tooltip-box tooltip-${getKategori("stunting",(stP*100))}">
+Stunting<br>${(stP*100).toFixed(1)}%
+</div>
+
+<div class="tooltip-box tooltip-${getKategori("wasting",(waP*100))}">
+Wasting<br>${(waP*100).toFixed(1)}%
+</div>
+
+<div class="tooltip-box tooltip-${getKategori("underweight",(unP*100))}">
+Underweight<br>${(unP*100).toFixed(1)}%
+</div>
+
+<div class="tooltip-box tooltip-${getKategori("overweight",(ovP*100))}">
+Overweight<br>${(ovP*100).toFixed(1)}%
+</div>
+
+</div>
+`)
 }
 
 function onEachDesa(feature,layer){
+
 let desa = feature.properties.WADMKD
-layer.bindTooltip("<b>"+desa+"</b><br>Total: "+hitungTotalDesa(desa))
+
+let semuaData = semuaData1.filter(d=>
+normalisasi(d["DESA/KELURAHAN"])==normalisasi(desa)
+)
+
+const stP = rataRata1(semuaData,tahunAktif1,"%Stunting")
+const waP = rataRata1(semuaData,tahunAktif1,"%Wasting")
+const unP = rataRata1(semuaData,tahunAktif1,"%Underweight")
+const ovP = rataRata1(semuaData,tahunAktif1,"%Overweight")
+
+layer.bindTooltip(`
+<span class="tooltip-title">${desa}</span>
+
+<div class="tooltip-container">
+
+<div class="tooltip-box tooltip-${getKategori("stunting",(stP*100))}">
+Stunting<br>${(stP*100).toFixed(1)}%
+</div>
+
+<div class="tooltip-box tooltip-${getKategori("wasting",(waP*100))}">
+Wasting<br>${(waP*100).toFixed(1)}%
+</div>
+
+<div class="tooltip-box tooltip-${getKategori("underweight",(unP*100))}">
+Underweight<br>${(unP*100).toFixed(1)}%
+</div>
+
+<div class="tooltip-box tooltip-${getKategori("overweight",(ovP*100))}">
+Overweight<br>${(ovP*100).toFixed(1)}%
+</div>
+
+</div>
+`)
 }
 
 function getColor(v){
