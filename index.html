@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <title>Dashboard Gizi Kabupaten Blitar</title>
 
 <style>
@@ -57,25 +58,35 @@ height:500px;
 overflow:auto;
 }
 
+table {
+font-size: 14px;
+}
+
+#modalDetail table {
+font-size: 11px;
+width: 100%;
+table-layout: fixed;
+}
+#modalDetail thead th {
+text-align: center;
+vertical-align: middle;
+}
+
+#modalDetail th:nth-child(1),
+#modalDetail td:nth-child(1), 
+#modalDetail th:nth-child(2),
+#modalDetail td:nth-child(2) {
+width: 8%;
+word-wrap: break-word;
+} 
+
 #table-container thead th{
-position: stick;
+position: sticky;
+text-align: center;
+vertical-align: middle;
 top: 0;
 background: rgb(121, 160, 233);
 z-index: 2;
-}
-
-th,td{
-border:1px solid #ccc;
-padding:6px;
-text-align:center;
-font-size:12px;
-white-space:nowrap;
-}
-
-th{
-background:#f2f2f2;
-position:sticky;
-top:0;
 }
 
 .card {
@@ -116,6 +127,47 @@ text-align:center;
 .tooltip-m{ background:#f4c542; color:#333; }
 .tooltip-t{ background:#f28c28; }
 .tooltip-st{ background:#d90429; }
+
+.row-equal > div{
+    display: flex;
+}
+
+.card{
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-full{
+height:100%;
+}
+
+/* 🔥 PANEL KANAN */
+.panel-kanan{
+height:100%;
+overflow-y:auto;
+border-left:2px solid #ddd;
+padding-left:10px;
+}
+
+.judul-panel{
+background:#6a1b9a;
+color:white;
+padding:8px;
+border-radius:6px;
+text-align:center;
+font-weight:600;
+margin-bottom:10px;
+}
+
+/* 🔥 CHART FULL HEIGHT */
+.chart-container{
+position:relative;
+height:100%;
+}
+
+.chart-container canvas{
+height:100% !important;
+}
 </style>
 
 <link rel="stylesheet" href="style.css">
@@ -125,7 +177,7 @@ text-align:center;
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <body>
 
 <nav class="navbar navbar-light bg-white shadow-sm">
@@ -503,43 +555,26 @@ Penyebaran Masalah Gizi Kabupaten Blitar Tahun 2024
 
 <div class="row">
 
-<div class="col-md-6">
+<div class="col-md-5">
 <div id="map"></div>
 </div>
 
-<div class="col-md-6">
+<div class="col-md-7">
 
 <div id="table-container" class="table-responsive">
 
-<table class="table table-bordered table-striped table-hover table-sm" style="min-width:1200px;">
+<table class="table table-bordered table-striped table-hover table-sm">
 <thead>
 <tr>
 <th>Kecamatan</th>
 <th>Puskesmas</th>
 <th>Desa/Kelurahan</th>
-<th>D/S</th>
 
-<th>Sangat Kurang</th>
-<th>Kurang</th>
-<th>Berat Badan Normal</th>
-<th>Risiko Lebih</th>
 
-<th>Sangat Pendek</th>
-<th>Pendek</th>
-<th>Normal</th>
-<th>Tinggi</th>
-
-<th>Gizi Buruk</th>
-<th>Gizi Kurang</th>
-<th>Normal</th>
-<th>Risiko Gizi Lebih</th>
-<th>Gizi Lebih</th>
-<th>Obesitas</th>
-
-<th>%Stunting</th>
-<th>%Wasting</th>
-<th>%Underweight</th>
-<th>%Overweight</th>
+<th>Stunting (%)</th>
+<th>Wasting (%)</th>
+<th>Underweight (%)</th>
+<th>Overweight (%)</th>
 </tr>
 </thead>
 
@@ -656,9 +691,7 @@ map.fitBounds(layer.getBounds())
 
 function styleKecamatan(feature){
 let kec = feature.properties.WADMKC
-
 let total = hitungTotalKecamatan(kec)
-
 return{
 color:"#333",
 weight:1,
@@ -669,7 +702,6 @@ fillOpacity:0.7
 
 function styleDesa(feature){
 let desa = feature.properties.WADMKD
-
 let total = hitungTotalDesa(desa)
 
 return{
@@ -800,14 +832,27 @@ Overweight<br>${(ovP*100).toFixed(1)}%
 
 </div>
 `)
+layer.on("click", function(){
+
+let dataWilayah = dataStunting1.filter(d =>
+normalisasi(d.Kecamatan)==normalisasi(kec)
+)
+
+let dataGabung = gabungDataTahunan(dataWilayah)
+
+bukaModalDetail(dataGabung,"Detail Kecamatan: "+kec)
+
+})
 }
 
 function onEachDesa(feature,layer){
 
 let desa = feature.properties.WADMKD
+let kecamatan = feature.properties.WADMKC
 
-let semuaData = semuaData1.filter(d=>
-normalisasi(d["DESA/KELURAHAN"])==normalisasi(desa)
+let semuaData = semuaData1.filter(d =>
+normalisasi(d["DESA/KELURAHAN"]) == normalisasi(desa) &&
+normalisasi(d["Kecamatan"]) == normalisasi(kecamatan)
 )
 
 const stP = rataRata1(semuaData,tahunAktif1,"%Stunting")
@@ -838,6 +883,17 @@ Overweight<br>${(ovP*100).toFixed(1)}%
 
 </div>
 `)
+layer.on("click", function(){
+
+let dataWilayah = dataStunting1.filter(d =>
+normalisasi(d["DESA/KELURAHAN"])==normalisasi(desa)
+)
+
+let dataGabung = gabungDataTahunan(dataWilayah)
+
+bukaModalDetail(dataGabung,"Detail Desa: "+desa)
+
+})
 }
 
 function getColor(v){
@@ -956,11 +1012,7 @@ function buatTabel(data){
 let tbody=document.getElementById("tabel-gizi")
 
 let kolom=[
-"Kecamatan","PUSKESMAS","DESA/KELURAHAN","D/S",
-"Sangat Kurang","Kurang","Berat Badan Normal","Risiko Lebih",
-"Sangat Pendek","Pendek","Normal","Tinggi",
-"Gizi Buruk","Gizi Kurang","Normal_1","Risiko Gizi Lebih",
-"Gizi Lebih","Obesitas",
+"Kecamatan","PUSKESMAS","DESA/KELURAHAN",
 "%Stunting","%Wasting","%Underweight","%Overweight"
 ]
 
@@ -982,6 +1034,36 @@ tbody.innerHTML=html
 function toNumber(value){
 if(value===null||value===undefined||value==="") return 0
 return parseFloat(String(value).replace("%","").replace(",","."))
+}
+
+function bukaModalDetail(data, judul){
+
+document.getElementById("judulModal").innerText = judul
+
+let kolom=[
+"PUSKESMAS","DESA/KELURAHAN","D/S",
+"Sangat Kurang","Kurang","Berat Badan Normal","Risiko Lebih",
+"Sangat Pendek","Pendek","Normal","Tinggi",
+"Gizi Buruk","Gizi Kurang","Normal_1","Risiko Gizi Lebih",
+"Gizi Lebih","Obesitas"
+]
+
+let html=""
+
+data.forEach(d=>{
+html+="<tr>"
+kolom.forEach(k=>{
+let val=d[k]
+if(val==null||val=="") val=0
+html+="<td>"+val+"</td>"
+})
+html+="</tr>"
+})
+
+document.getElementById("isiModal").innerHTML=html
+
+let modal = new bootstrap.Modal(document.getElementById('modalDetail'))
+modal.show()
 }
 
 document.addEventListener("DOMContentLoaded", function(){
@@ -1014,26 +1096,129 @@ updateSemua()
 
 </script>
 
+<div class="modal fade" id="modalDetail" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title" id="judulModal">Detail Wilayah</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm">
+            <thead>
+              <tr>
+                <th>Puskesmas</th>
+                <th>Desa</th>
+                <th>D/S</th>
+
+                <th>Sangat Kurang</th>
+                <th>Kurang</th>
+                <th>Berat Badan Normal</th>
+                <th>Risiko Lebih</th>
+
+                <th>Sangat Pendek</th>
+                <th>Pendek</th>
+                <th>Tinggi Badan Normal</th>
+                <th>Tinggi</th>
+
+                <th>Gizi Buruk</th>
+                <th>Gizi Kurang</th>
+                <th>Gizi Normal</th>
+                <th>Risiko Gizi Lebih</th>
+                <th>Gizi Lebih</th>
+                <th>Obesitas</th>
+              </tr>
+            </thead>
+            <tbody id="isiModal"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <section>
 <div class="container mt-4">
-<div class="card p-4">
+<div class="row row-equal">
 
-<h4 class="text-center mb-3">Tren Persentase Status Gizi</h4>
+<!-- 🔥 CHART -->
+<div class="col-md-8">
+<div class="card p-4 card-full w-100">
+
+<h4 class="text-center mb-3">
+Tren Status Gizi
+</h4>
 
 <div class="row mb-3 justify-content-center">
-<div class="col-md-4">
+<div class="col-md-6">
 <select id="filterKecamatan1" class="form-select">
 <option value="all">Semua Kecamatan</option>
 </select>
 </div>
 </div>
 
+<div class="chart-container">
 <canvas id="chartGizi"></canvas>
+</div>
+
+</div>
+</div>
+
+<!-- 🔥 PANEL FAKTOR -->
+<div class="col-md-4">
+<div class="card p-3 panel-kanan card-full w-100">
+
+<div class="judul-panel">
+Determinan Faktor
+</div>
+
+<div id="listFaktor"></div>
+
+</div>
+</div>
+
+</div>
+</div>
 
 <script>
 
 let semuaData2 = []
 let chart
+let faktorAktif = "D/S"
+
+/* 🔥 LIST FAKTOR */
+const indikatorList = [
+"D/S",
+"Sangat Kurang","Kurang","Berat Badan Normal","Risiko Lebih",
+"Sangat Pendek","Pendek","Normal","Tinggi",
+"Gizi Buruk","Gizi Kurang","Normal_1","Risiko Gizi Lebih",
+"Gizi Lebih","Obesitas"
+]
+
+const namaFaktor = {
+    "D/S": "D/S",
+
+    "Sangat Kurang": "Sangat Kurang",
+    "Kurang": "Kurang",
+    "Berat Badan Normal": "Berat Badan Normal",
+    "Risiko Lebih": "Risiko Lebih",
+
+    "Sangat Pendek": "Sangat Pendek",
+    "Pendek": "Pendek",
+    "Normal": "Tinggi Badan Normal",
+    "Tinggi": "Tinggi",
+
+    "Gizi Buruk": "Gizi Buruk",
+    "Gizi Kurang": "Gizi Kurang",
+    "Normal_1": "Gizi Normal",
+    "Risiko Gizi Lebih": "Risiko Gizi Lebih",
+    "Gizi Lebih": "Gizi Lebih",
+    "Obesitas": "Obesitas"
+}
 
 fetch("data_stunting.json")
 .then(res => res.json())
@@ -1042,8 +1227,9 @@ fetch("data_stunting.json")
     semuaData2 = data
 
     isiDropdown()
+    buatPanelFaktor()
     initChart()
-    updateChart("all")
+    updateChart()
 
 })
 
@@ -1060,28 +1246,58 @@ function isiDropdown(){
     setKec1.forEach(k=>{
         filterKecamatan1.innerHTML += `<option value="${k}">${k}</option>`
     })
-
 }
 
+/* 🔥 PANEL RADIO */
+function buatPanelFaktor(){
+
+    let html = ""
+
+    indikatorList.forEach((f,i)=>{
+        html += `
+        <div class="form-check">
+        <input class="form-check-input" type="radio" name="faktor" value="${f}" ${i==0?"checked":""}>
+        <label class="form-check-label">${namaFaktor[f] || f}</label>
+        </div>
+        `
+    })
+
+    document.getElementById("listFaktor").innerHTML = html
+
+    document.querySelectorAll("input[name='faktor']").forEach(r=>{
+        r.addEventListener("change", function(){
+            faktorAktif = this.value
+            updateChart()
+        })
+    })
+}
+
+/* 🔥 INIT CHART */
 function initChart(){
 
     const ctx = document.getElementById('chartGizi')
 
     chart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: ['2024','2025','2026'],
             datasets: []
         },
         options: {
             responsive:true,
+            maintainAspectRatio:false,
             plugins:{
-                legend:{ position:'top' },
+                legend:{ display:false },
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            let value = context.raw || 0
-                            return context.dataset.label + ': ' + (value * 100).toFixed(2) + '%'
+                            let val = context.raw || 0
+
+                            if(faktorAktif === "D/S"){
+                                return (namaFaktor[faktorAktif] || faktorAktif) + ": " + val.toFixed(2) + " %"
+                            }
+
+                            return (namaFaktor[faktorAktif] || faktorAktif) + ": " + val.toFixed(0)
                         }
                     }
                 }
@@ -1090,109 +1306,84 @@ function initChart(){
                 y:{
                     beginAtZero:true,
                     ticks:{
-                        callback: val => (val * 100).toFixed(2) + '%'
+                        callback:function(value){
+                            if(faktorAktif === "D/S"){
+                                return value + " %"
+                            }
+                            return value
+                        }
                     }
                 }
             }
         }
     })
-
 }
 
+/* 🔥 HITUNG DATA */
 function hitungData(kecamatan){
 
-    let hasil = {
-        stunting:[0,0,0],
-        wasting:[0,0,0],
-        underweight:[0,0,0],
-        overweight:[0,0,0],
-
-        count:[0,0,0]
-    }
+    let hasil = [0,0,0]
+    let count = [0,0,0]
 
     semuaData2.forEach(d=>{
 
         if(d.Level != "Desa") return
         if(kecamatan != "all" && d.Kecamatan != kecamatan) return
 
-        let tahunIndex = {
+        let idx = {
             "2024":0,
             "2025":1,
             "2026":2
         }[String(d.Tahun)]
 
-        if(tahunIndex === undefined) return
+        if(idx === undefined) return
 
-        let st = toNumber(d["%Stunting"])
-        let wa = toNumber(d["%Wasting"])
-        let un = toNumber(d["%Underweight"])
-        let ov = toNumber(d["%Overweight"])
+        let val = toNumber(d[faktorAktif])
 
-        if(st || wa || un || ov){
-
-            hasil.stunting[tahunIndex] += st
-            hasil.wasting[tahunIndex] += wa
-            hasil.underweight[tahunIndex] += un
-            hasil.overweight[tahunIndex] += ov
-
-            hasil.count[tahunIndex]++
+        // 🔥 D/S = RATA-RATA
+        if(faktorAktif === "D/S"){
+            if(val > 0){
+                hasil[idx] += val
+                count[idx]++
+            }
+        }
+        // 🔥 FAKTOR LAIN = JUMLAH
+        else{
+            hasil[idx] += val
         }
 
     })
 
-    for(let i=0;i<3;i++){
-        if(hasil.count[i] > 0){
-            hasil.stunting[i] /= hasil.count[i]
-            hasil.wasting[i] /= hasil.count[i]
-            hasil.underweight[i] /= hasil.count[i]
-            hasil.overweight[i] /= hasil.count[i]
+    // 🔥 FINAL D/S → RATA2 × 100
+    if(faktorAktif === "D/S"){
+        for(let i=0;i<3;i++){
+            if(count[i] > 0){
+                hasil[i] = (hasil[i] / count[i]) * 100
+            }
         }
     }
 
     return hasil
-
 }
 
-function updateChart(kecamatan){
+/* 🔥 UPDATE CHART */
+function updateChart(){
 
-    let data = hitungData(kecamatan)
+    let kec = document.getElementById("filterKecamatan1").value
+    let data = hitungData(kec)
 
-    chart.data.datasets = [
-
-        {
-            label:'%Overweight',
-            data:data.overweight,
-            borderColor:'blue',
-            tension:0.3
-        },
-        {
-            label:'%Stunting',
-            data:data.stunting,
-            borderColor:'teal',
-            tension:0.3
-        },
-        {
-            label:'%Underweight',
-            data:data.underweight,
-            borderColor:'green',
-            tension:0.3
-        },
-        {
-            label:'%Wasting',
-            data:data.wasting,
-            borderColor:'darkgreen',
-            tension:0.3
-        }
-
-    ]
+    chart.data.datasets = [{
+        label:faktorAktif,
+        data:data,
+        backgroundColor:'#6a1b9a'
+    }]
 
     chart.update()
-
 }
 
-filterKecamatan1.addEventListener("change", function(){
-    updateChart(this.value)
-})
+/* 🔥 FILTER */
+document.getElementById("filterKecamatan1")
+.addEventListener("change", updateChart)
 
 function toNumber(val){
     if(!val) return 0
@@ -1200,9 +1391,6 @@ function toNumber(val){
 }
 
 </script>
-</div>
-</div>
-
 </section>
 </body>
 </html>
