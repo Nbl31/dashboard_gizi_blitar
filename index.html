@@ -159,7 +159,6 @@ font-weight:600;
 margin-bottom:10px;
 }
 
-/* 🔥 CHART FULL HEIGHT */
 .chart-container{
 position:relative;
 height:100%;
@@ -1145,7 +1144,6 @@ updateSemua()
 <div class="container mt-4">
 <div class="row row-equal">
 
-<!-- 🔥 CHART -->
 <div class="col-md-8">
 <div class="card p-4 card-full w-100">
 
@@ -1168,7 +1166,6 @@ Tren Status Gizi
 </div>
 </div>
 
-<!-- 🔥 PANEL FAKTOR -->
 <div class="col-md-4">
 <div class="card p-3 panel-kanan card-full w-100">
 
@@ -1190,7 +1187,6 @@ let semuaData2 = []
 let chart
 let faktorAktif = "D/S"
 
-/* 🔥 LIST FAKTOR */
 const indikatorList = [
 "D/S",
 "Sangat Kurang","Kurang","Berat Badan Normal","Risiko Lebih",
@@ -1248,7 +1244,6 @@ function isiDropdown(){
     })
 }
 
-/* 🔥 PANEL RADIO */
 function buatPanelFaktor(){
 
     let html = ""
@@ -1272,7 +1267,6 @@ function buatPanelFaktor(){
     })
 }
 
-/* 🔥 INIT CHART */
 function initChart(){
 
     const ctx = document.getElementById('chartGizi')
@@ -1319,7 +1313,6 @@ function initChart(){
     })
 }
 
-/* 🔥 HITUNG DATA */
 function hitungData(kecamatan){
 
     let hasil = [0,0,0]
@@ -1340,21 +1333,19 @@ function hitungData(kecamatan){
 
         let val = toNumber(d[faktorAktif])
 
-        // 🔥 D/S = RATA-RATA
         if(faktorAktif === "D/S"){
             if(val > 0){
                 hasil[idx] += val
                 count[idx]++
             }
         }
-        // 🔥 FAKTOR LAIN = JUMLAH
+
         else{
             hasil[idx] += val
         }
 
     })
 
-    // 🔥 FINAL D/S → RATA2 × 100
     if(faktorAktif === "D/S"){
         for(let i=0;i<3;i++){
             if(count[i] > 0){
@@ -1366,7 +1357,6 @@ function hitungData(kecamatan){
     return hasil
 }
 
-/* 🔥 UPDATE CHART */
 function updateChart(){
 
     let kec = document.getElementById("filterKecamatan1").value
@@ -1381,7 +1371,6 @@ function updateChart(){
     chart.update()
 }
 
-/* 🔥 FILTER */
 document.getElementById("filterKecamatan1")
 .addEventListener("change", updateChart)
 
