@@ -242,7 +242,8 @@ def api_data():
     try:
         
         import os
-        file_path = os.path.join(os.path.dirname(__file__), "Data Berjalan RAW.xlsx")
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = os.path.join(base_dir, "Data Berjalan RAW.xlsx")
         
         if not os.path.exists(file_path):
             return jsonify({"error": f"File tidak ditemukan: {file_path}"}), 404
