@@ -569,7 +569,7 @@
             if (nama === "underweight" && now === 0 && (prev === 0 || isNaN(prev))) displayValue = "0%";
             valueEl.innerText = displayValue;
             if (tahunAktif === 2024 || isNaN(prev) || prev === 0) trendEl.innerText = "";
-            else { let arrow = diff > 0.01 ? "📈 Naik" : (diff < -0.01 ? "📉 Turun" : "➖ Stabil"); trendEl.innerText = `${arrow} ${Math.abs(diff).toFixed(2)}% dari ${tahunAktif - 1}``; trendEl.className = `small fw-semibold mb-3 ${diff > 0.01 ? 'text-danger' : (diff < -0.01 ? 'text-success' : 'text-muted')}`; }
+            else { let arrow = diff > 0.01 ? "📈 Naik" : (diff < -0.01 ? "📉 Turun" : "➖ Stabil"); trendEl.innerText = `${arrow} ${Math.abs(diff).toFixed(2)}% dari ${tahunAktif - 1}`; trendEl.className = `small fw-semibold mb-3 ${diff > 0.01 ? 'text-danger' : (diff < -0.01 ? 'text-success' : 'text-muted')}`; }
             document.querySelectorAll(`[id^='${nama}-']`).forEach(r => r.classList.remove("kat-sr", "kat-r", "kat-m", "kat-t", "kat-st"));
             const cat = getKategori(nama, now * 100); const row = document.getElementById(nama + "-" + cat); if (row) row.classList.add("kat-" + cat);
         }
