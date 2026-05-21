@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard Gizi Kabupaten Blitar | Satu Data Gizi</title>
+    <!-- Modern Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- CSS Frameworks -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+    <!-- UI Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+    <style>
+        :root {
+            --primary: #1e4a76;
+            --primary-light: #3b82f6;
+            --secondary: #475569;
+            --success: #0e9f6e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f0f4f9;
+            --card-bg: #ffffff;
+            --sidebar-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --radius: 1rem;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+        .dashboard-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 28px 24px;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: var(--shadow-sm);
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 32px 36px;
+        }
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 24px 20px;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.01em;
+        }
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(0px);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .stat-card {
+            padding: 24px;
+            text-align: left;
+        }
+        .stat-card h6 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 10px;
+        }
+        .stat-card h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover .stat-icon {
+            transform: scale(1.02);
+        }
+        .icon-stunting { background: rgba(30, 74, 118, 0.12); color: #1e4a76; }
+        .icon-wasting { background: rgba(14, 159, 110, 0.12); color: #0e9f6e; }
+        .icon-underweight { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+        .icon-overweight { background: rgba(239, 68, 68, 0.12); color: #ef4444; }
+        .filter-section { margin-top: 32px; }
+        .filter-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            display: block;
+            letter-spacing: 0.04em;
+        }
+        .btn-check:checked + .btn-year {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 2px 6px rgba(30, 74, 118, 0.2);
+        }
+        .btn-year {
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-weight: 500;
+            margin-right: 10px;
+            margin-bottom: 8px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+        .btn-year:hover { background: #f8fafc; border-color: #cbd5e1; }
+        #map { height: 450px; border-radius: var(--radius); z-index: 1; box-shadow: var(--shadow-sm); }
+        .table-container { max-height: 450px; overflow-y: auto; scrollbar-width: thin; }
+        .table thead th {
+            background: #f9fafb;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #475569;
+            padding: 14px 12px;
+            border: none;
+            border-bottom: 1px solid #eef2f6;
+        }
+        .table td { padding: 14px 12px; vertical-align: middle; border-color: #f0f2f5; font-size: 0.85rem; }
+        .table tbody tr:hover { background-color: #fafcff; transition: background 0.15s; }
+        .kategori-table { font-size: 0.7rem; margin-top: 16px; border-radius: 12px; overflow: hidden; }
+        .kategori-table th, .kategori-table td { border: none !important; padding: 6px 4px; }
+        .kat-sr td { background: #dcfce7 !important; color: #166534 !important; }
+        .kat-r td { background: #fef9c3 !important; color: #854d0e !important; }
+        .kat-m td { background: #ffedd5 !important; color: #9a3412 !important; }
+        .kat-t td { background: #fee2e2 !important; color: #991b1b !important; }
+        .kat-st td { background: #450a0a !important; color: white !important; }
+        .chart-box { padding: 24px; }
+        .leaflet-tooltip {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(4px);
+            color: var(--text-main);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 20px;
+            padding: 14px 18px;
+            box-shadow: var(--shadow-lg);
+            min-width: 240px;
+            font-family: 'Inter', sans-serif;
+        }
+        .tooltip-title { font-weight: 800; font-size: 1rem; color: #1e293b; text-align: center; margin-bottom: 12px; display: block; }
+        .tooltip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .tooltip-box { padding: 8px 6px; border-radius: 14px; text-align: center; }
+        .tooltip-box-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; opacity: 0.8; }
+        .form-check {
+            padding: 12px 12px 12px 40px;
+            margin-bottom: 8px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            background: #ffffff;
+        }
+        .form-check:hover { background: #f8fafc; border-color: #e2e8f0; }
+        .form-check-input:checked + .form-check-label { font-weight: 700; color: var(--primary); }
+        .form-check-input:checked { background-color: var(--primary); border-color: var(--primary); box-shadow: 0 0 0 2px rgba(30, 74, 118, 0.2); }
+        .modal-category-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            color: var(--primary);
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(30, 74, 118, 0.15);
+        }
+        .indicator-card {
+            background: #fff;
+            border: 1px solid #edf2f7;
+            border-radius: 20px;
+            padding: 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+        }
+        .indicator-card:hover { border-color: var(--primary-light); background: #fefeff; transform: translateY(-2px); }
+        .indicator-icon-wrapper {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .indicator-info {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .indicator-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+        .indicator-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+            white-space: nowrap;
+        }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .main-content header {
+            background: transparent;
+            backdrop-filter: none;
+            padding-bottom: 0;
+            margin-bottom: 32px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 16px;
+        }
+        .main-content header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e4a76 0%, #2d6a9f 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        .badge { font-weight: 600; padding: 6px 12px; border-radius: 40px; font-size: 0.7rem; }
+        /* Sidebar logo sederhana (hanya teks) */
+        .sidebar-logo-simple {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sidebar-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.4rem;
+        }
+        .sidebar-description {
+            font-size: 0.7rem;
+            line-height: 1.4;
+            color: #5b6e8c;
+            background: #f8fafc;
+            padding: 12px 12px;
+            border-radius: 16px;
+            margin: 20px 0 16px 0;
+            border-left: 3px solid var(--primary);
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-wrapper">
+    <!-- Sidebar dengan logo sederhana (tanpa gambar kabupaten) -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo-simple mb-3 pb-1 border-bottom">
+            <div class="sidebar-icon">
+                <i class="bi bi-activity"></i>
+            </div>
+            <div>
+                <h5 class="mb-0 fw-bold" style="color: #0f172a;">GiziBlitar</h5>
+                <small class="text-muted" style="font-size: 0.7rem;">Monitoring Dashboard</small>
+            </div>
+        </div>
+        <div class="sidebar-description">
+            <i class="bi bi-info-circle-fill me-1" style="font-size: 0.65rem;"></i> Dashboard ini menyajikan visualisasi data status gizi balita di Kabupaten Blitar sebagai sarana pemantauan kondisi gizi serta mendukung pengambilan keputusan dalam upaya peningkatan kesehatan anak.
+        </div>
+        <div class="filter-section">
+            <span class="filter-label"><i class="bi bi-calendar3 me-1"></i> Pilih Tahun Analisis</span>
+            <div class="d-flex flex-wrap" id="tahun-filter">
+                <input type="radio" class="btn-check" name="tahun" id="th2024" data-tahun="2024" checked>
+                <label class="btn btn-year tahun-btn" for="th2024" data-tahun="2024">2024</label>
+                <input type="radio" class="btn-check" name="tahun" id="th2025" data-tahun="2025">
+                <label class="btn btn-year tahun-btn" for="th2025" data-tahun="2025">2025</label>
+                <input type="radio" class="btn-check" name="tahun" id="th2026" data-tahun="2026">
+                <label class="btn btn-year tahun-btn" for="th2026" data-tahun="2026">2026</label>
+            </div>
+        </div>
+        <div class="filter-section">
+            <span class="filter-label"><i class="bi bi-geo-alt me-1"></i> Penyebaran Wilayah</span>
+            <select id="filterKecamatanCentral" class="form-select border-0 bg-light rounded-3" placeholder="Pilih Kecamatan...">
+                <option value="all">Semua Kecamatan</option>
+            </select>
+        </div>
+        <div class="mt-auto pt-4 text-center">
+            <p class="small text-muted mb-0">Status: <span class="text-success fw-semibold">● Live Data</span></p>
+            <p id="catatanBulan" class="small text-muted mt-2" style="font-size: 10px;"></p>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="mb-1" id="mainTitle">Dashboard Monitoring Gizi</h2>
+                <p class="text-muted mb-0">Visualisasi status gizi balita Kabupaten Blitar Tahun <span id="tahunJudul" class="fw-bold text-primary"></span></p>
+            </div>
+            <button class="btn btn-light shadow-sm border d-lg-none rounded-3" onclick="document.getElementById('sidebar').classList.toggle('active')">
+                <i class="bi bi-list"></i>
+            </button>
+        </header>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card h-100 border-0">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-stunting"><i class="bi bi-person-down"></i></div>
+                        <h6>Stunting</h6>
+                        <h2 id="stuntingValue">0%</h2>
+                        <p id="stuntingTrend" class="small fw-semibold mb-3"></p>
+                        <table class="table table-sm kategori-table mb-0">
+                            <tr id="stunting-sr"><td>Sangat Rendah</td><td class="text-end">&lt; 10</td></tr>
+                            <tr id="stunting-r"><td>Rendah</td><td class="text-end">10 - 15</td></tr>
+                            <tr id="stunting-m"><td>Medium</td><td class="text-end">15 - 20</td></tr>
+                            <tr id="stunting-t"><td>Tinggi</td><td class="text-end">20 - 30</td></tr>
+                            <tr id="stunting-st"><td>Sangat Tinggi</td><td class="text-end">≥ 30</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 border-0">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-wasting"><i class="bi bi-bar-chart-steps"></i></div>
+                        <h6>Wasting</h6>
+                        <h2 id="wastingValue">0%</h2>
+                        <p id="wastingTrend" class="small fw-semibold mb-3"></p>
+                        <table class="table table-sm kategori-table mb-0">
+                            <tr id="wasting-sr"><td>Sangat Rendah</td><td class="text-end">&lt; 2.5</td></tr>
+                            <tr id="wasting-r"><td>Rendah</td><td class="text-end">2.5 - 5</td></tr>
+                            <tr id="wasting-m"><td>Medium</td><td class="text-end">5 - 10</td></tr>
+                            <tr id="wasting-t"><td>Tinggi</td><td class="text-end">10 - 15</td></tr>
+                            <tr id="wasting-st"><td>Sangat Tinggi</td><td class="text-end">≥ 15</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 border-0">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-underweight"><i class="bi bi-graph-down-arrow"></i></div>
+                        <h6>Underweight</h6>
+                        <h2 id="underweightValue">0%</h2>
+                        <p id="underweightTrend" class="small fw-semibold mb-3"></p>
+                        <table class="table table-sm kategori-table mb-0">
+                            <tr id="underweight-r"><td>Rendah</td><td class="text-end">&lt; 5</td></tr>
+                            <tr id="underweight-m"><td>Medium</td><td class="text-end">5 - 10</td></tr>
+                            <tr id="underweight-t"><td>Tinggi</td><td class="text-end">10 - 15</td></tr>
+                            <tr id="underweight-st"><td>Sangat Tinggi</td><td class="text-end">≥ 15</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card h-100 border-0">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-overweight"><i class="bi bi-graph-up-arrow"></i></div>
+                        <h6>Overweight</h6>
+                        <h2 id="overweightValue">0%</h2>
+                        <p id="overweightTrend" class="small fw-semibold mb-3"></p>
+                        <table class="table table-sm kategori-table mb-0">
+                            <tr id="overweight-sr"><td>Sangat Rendah</td><td class="text-end">&lt; 2.5</td></tr>
+                            <tr id="overweight-r"><td>Rendah</td><td class="text-end">2.5 - 5</td></tr>
+                            <tr id="overweight-m"><td>Medium</td><td class="text-end">5 - 10</td></tr>
+                            <tr id="overweight-t"><td>Tinggi</td><td class="text-end">10 - 15</td></tr>
+                            <tr id="overweight-st"><td>Sangat Tinggi</td><td class="text-end">≥ 15</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-xl-5 col-lg-6">
+                <div class="card h-100 border-0">
+                    <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
+                        <h5 class="mb-1 fw-semibold" id="judulDashboard1">Peta Distribusi</h5>
+                        <p class="text-muted small mb-0">Klik wilayah untuk melihat detail data</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-7 col-lg-6">
+                <div class="card h-100 border-0">
+                    <div class="card-header bg-transparent border-0 py-3 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <h5 class="mb-0 fw-semibold">Data Wilayah</h5>
+                        <div class="input-group input-group-sm" style="max-width: 260px;">
+                            <span class="input-group-text bg-light border-end-0 rounded-start-3"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" id="tabelSearch" class="form-control bg-light border-start-0 rounded-end-3" placeholder="Cari wilayah...">
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-container">
+                            <table class="table table-hover mb-0 align-middle">
+                                <thead>
+                                    <tr><th>Kecamatan</th><th>Puskesmas</th><th>Desa/Kelurahan</th><th class="text-center">Stunting</th><th class="text-center">Wasting</th><th class="text-center">Underweight</th><th class="text-center">Overweight</th><th class="text-center">Aksi</th></tr>
+                                </thead>
+                                <tbody id="tabel-gizi"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalDetail" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content border-0 shadow-lg rounded-4">
+                    <div class="modal-header bg-light border-0 rounded-top-4"><h5 class="modal-title" id="judulModal">Detail Wilayah</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                    <div class="modal-body" id="modalBody"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-xl-8 col-lg-7">
+                <div class="card h-100 chart-box border-0">
+                    <div class="card-header bg-transparent border-0 p-0 mb-4 d-flex justify-content-between align-items-center">
+                        <div><h5 class="mb-1 fw-semibold">Tren Status Gizi</h5><p class="text-muted small mb-0">Perbandingan data tahunan berdasarkan indikator</p></div>
+                    </div>
+                    <div class="card-body p-0" style="height: 350px;">
+                        <canvas id="chartGizi"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-5">
+                <div class="card h-100 border-0">
+                    <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0"><h5 class="mb-1 fw-semibold">Determinan Faktor</h5><p class="text-muted small mb-0">Pilih indikator untuk melihat tren</p></div>
+                    <div class="card-body p-4 overflow-auto" style="max-height: 400px;"><div id="listFaktor" class="d-flex flex-column"></div></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global state
+        let semuaData = [];
+        let tahunAktif = 2024;
+        let kecamatanAktif = "all";
+        let faktorAktif = "D/S";
+        let chartInstance;
+        let mapInstance;
+        let geoLayers = [];
+        let tomSelectInstance;
+        let lastTableData = [];
+
+        const indikatorList = ["D/S", "Sangat Kurang", "Kurang", "Berat Badan Normal", "Risiko Lebih", "Sangat Pendek", "Pendek", "Normal", "Tinggi", "Gizi Buruk", "Gizi Kurang", "Normal_1", "Risiko Gizi Lebih", "Gizi Lebih", "Obesitas"];
+        const namaFaktor = {
+            "D/S": "D/S", "Sangat Kurang": "Sangat Kurang", "Kurang": "Kurang", "Berat Badan Normal": "BB Normal", "Risiko Lebih": "Risiko Lebih",
+            "Sangat Pendek": "Sangat Pendek", "Pendek": "Pendek", "Normal": "TB Normal", "Tinggi": "Tinggi", "Gizi Buruk": "Gizi Buruk",
+            "Gizi Kurang": "Gizi Kurang", "Normal_1": "Gizi Normal", "Risiko Gizi Lebih": "Risiko Gizi Lebih", "Gizi Lebih": "Gizi Lebih", "Obesitas": "Obesitas"
+        };
+
+        async function initApp() {
+            try {
+                const response = await fetch("data_stunting.json");
+                const data = await response.json();
+                semuaData = data;
+                initMap();
+                initChart();
+                buildFilters();
+                bindEvents();
+                updateAll();
+            } catch (err) { console.error("Failed to initialize app:", err); }
+        }
+
+        function buildFilters() {
+            const kecSet = new Set();
+            semuaData.forEach(d => { if (d.Level === "Desa") kecSet.add(d.Kecamatan); });
+            const selectEl = document.getElementById("filterKecamatanCentral");
+            [...kecSet].sort().forEach(k => { const opt = document.createElement("option"); opt.value = k; opt.textContent = k; selectEl.appendChild(opt); });
+            tomSelectInstance = new TomSelect("#filterKecamatanCentral", { create: false, sortField: { field: "text", direction: "asc" }, onChange: (val) => { kecamatanAktif = val; updateAll(); } });
+            let factorHtml = "";
+            indikatorList.forEach((f, i) => { factorHtml += `<div class="form-check"><input class="form-check-input" type="radio" name="faktor" id="f${i}" value="${f}" ${i === 0 ? "checked" : ""}><label class="form-check-label" for="f${i}">${namaFaktor[f] || f}</label></div>`; });
+            document.getElementById("listFaktor").innerHTML = factorHtml;
+        }
+
+        function bindEvents() {
+            document.querySelectorAll('input[name="tahun"]').forEach(radio => { radio.addEventListener("change", (e) => { tahunAktif = parseInt(e.target.getAttribute("data-tahun")); updateAll(); }); });
+            document.getElementById("listFaktor").addEventListener("change", (e) => { if (e.target.name === "faktor") { faktorAktif = e.target.value; updateChart(); } });
+            document.getElementById("tabelSearch").addEventListener("input", (e) => { buildTable(lastTableData, e.target.value); });
+        }
+
+        function updateAll() { updateDashboard(); updateMapAndTable(); updateChart(); }
+
+        function updateDashboard() {
+            document.getElementById("tahunJudul").innerText = tahunAktif;
+            const areaName = kecamatanAktif === "all" ? "Kabupaten Blitar" : "Kecamatan " + kecamatanAktif;
+            document.getElementById("mainTitle").innerText = "Monitoring Gizi: " + areaName;
+            const prevYear = tahunAktif - 1;
+            const cards = ["stunting", "wasting", "underweight", "overweight"];
+            const fieldMap = { "stunting": "%Stunting", "wasting": "%Wasting", "underweight": "%Underweight", "overweight": "%Overweight" };
+            cards.forEach(card => { const nowVal = rataRata(tahunAktif, fieldMap[card], kecamatanAktif); const prevVal = rataRata(prevYear, fieldMap[card], kecamatanAktif); updateCardUI(card, nowVal, prevVal); });
+            const bulan = tahunAktif === 2026 ? cekBulanTerakhir(2026) : "";
+            document.getElementById("catatanBulan").innerText = bulan ? "Data tersedia sampai: " + bulan : "";
+        }
+
+        function updateCardUI(nama, now, prev) {
+            const valueEl = document.getElementById(nama + "Value"); const trendEl = document.getElementById(nama + "Trend");
+            const diff = (now - prev) * 100;
+            let displayValue = (now * 100).toFixed(2) + "%";
+            if (nama === "underweight" && now === 0 && (prev === 0 || isNaN(prev))) displayValue = "0%";
+            valueEl.innerText = displayValue;
+            if (tahunAktif === 2024 || isNaN(prev) || prev === 0) trendEl.innerText = "";
+            else { let arrow = diff > 0.01 ? "📈 Naik" : (diff < -0.01 ? "📉 Turun" : "➖ Stabil"); trendEl.innerText = `${arrow} ${Math.abs(diff).toFixed(2)}% dari thn lalu`; trendEl.className = `small fw-semibold mb-3 ${diff > 0.01 ? 'text-danger' : (diff < -0.01 ? 'text-success' : 'text-muted')}`; }
+            document.querySelectorAll(`[id^='${nama}-']`).forEach(r => r.classList.remove("kat-sr", "kat-r", "kat-m", "kat-t", "kat-st"));
+            const cat = getKategori(nama, now * 100); const row = document.getElementById(nama + "-" + cat); if (row) row.classList.add("kat-" + cat);
+        }
+
+        function updateMapAndTable() {
+            const dataForWilayah = semuaData.filter(d => d.Level === "Desa" && String(d.Tahun) === String(tahunAktif) && (kecamatanAktif === "all" || d.Kecamatan === kecamatanAktif));
+            drawMap(kecamatanAktif);
+            lastTableData = dataForWilayah; buildTable(dataForWilayah);
+        }
+
+        function drawMap(kec) {
+            geoLayers.forEach(l => { if (mapInstance) mapInstance.removeLayer(l); });
+            geoLayers = [];
+            const isKecMode = (kec === "all");
+            const file = isKecMode ? "Kecamatan.geojson" : `${kec}.geojson`;
+            fetch(file).then(r => r.json()).then(geoData => {
+                const layer = L.geoJSON(geoData, { style: (f) => { const name = f.properties[isKecMode ? 'WADMKC' : 'WADMKD']; const stats = getWilayahNutrisi(name, isKecMode); return { color: "#fff", weight: 1.5, fillOpacity: 0.85, fillColor: getColor(stats.st) }; }, onEachFeature: (f, l) => bindFeatureInteraction(f, l, isKecMode) }).addTo(mapInstance);
+                geoLayers.push(layer); mapInstance.fitBounds(layer.getBounds(), { padding: [20,20] });
+            }).catch(e => console.warn("GeoJSON error:", e));
+        }
+
+        function buildTable(data, searchTerm) {
+            const hasil = {}; data.forEach(d => { const key = `${d.Kecamatan || '?'}_${d.PUSKESMAS || '?'}_${d["DESA/KELURAHAN"] || '?'}`; if (!hasil[key]) hasil[key] = { Kec: d.Kecamatan, Pusk: d.PUSKESMAS, Desa: d["DESA/KELURAHAN"], st: 0, wa: 0, un: 0, ov: 0, count: 0 }; const row = hasil[key]; const s = toNumber(d["%Stunting"]), w = toNumber(d["%Wasting"]), u = toNumber(d["%Underweight"]), o = toNumber(d["%Overweight"]); if (s>0 || w>0 || u>0 || o>0) { row.st += s; row.wa += w; row.un += u; row.ov += o; row.count++; } });
+            const sorted = Object.values(hasil).sort((a,b)=> a.Kec.localeCompare(b.Kec));
+            const filter = (searchTerm || "").toLowerCase(); let html = "";
+            sorted.forEach(d => { if (filter && !d.Kec.toLowerCase().includes(filter) && !d.Pusk.toLowerCase().includes(filter) && !d.Desa.toLowerCase().includes(filter)) return; const fmt = (v) => d.count>0 ? (v/d.count*100).toFixed(2)+"%" : "0%"; const areaName = d.Desa; html += `<tr><td>${d.Kec}</td><td>${d.Pusk}</td><td>${d.Desa}</td><td class="text-center"><span class="badge rounded-pill ${getBadgeClass('stunting',(d.st/d.count)*100)}">${fmt(d.st)}</span></td><td class="text-center"><span class="badge rounded-pill ${getBadgeClass('wasting',(d.wa/d.count)*100)}">${fmt(d.wa)}</span></td><td class="text-center"><span class="badge rounded-pill ${getBadgeClass('underweight',(d.un/d.count)*100)}">${fmt(d.un)}</span></td><td class="text-center"><span class="badge rounded-pill ${getBadgeClass('overweight',(d.ov/d.count)*100)}">${fmt(d.ov)}</span></td><td class="text-center"><button class="btn btn-sm btn-light border rounded-3" onclick="openDetail('${areaName}', '${d.Kec}')"><i class="bi bi-eye"></i> Detail</button></td></tr>`; });
+            document.getElementById("tabel-gizi").innerHTML = html || '<tr><td colspan="8" class="text-center py-4 text-muted">Tidak ada data ditemukan</td></tr>';
+        }
+
+        function getBadgeClass(type, p) { const cat = getKategori(type, p); if (cat === 'sr') return 'bg-success text-white'; if (cat === 'r') return 'bg-info text-dark'; if (cat === 'm') return 'bg-warning text-dark'; if (cat === 't') return 'bg-danger text-white'; return 'bg-dark text-white'; }
+        function openDetail(name, kec) { const detailData = semuaData.filter(d => normal(d["DESA/KELURAHAN"]) === normal(name) && normal(d.Kecamatan) === normal(kec) && d.Level === "Desa" && String(d.Tahun) === String(tahunAktif)); bukaModalDetail(name, detailData); }
+        function updateChart() { const labelArr = ['2024','2025','2026']; const dataSet = labelArr.map(th => hitungDataSetChart(th, kecamatanAktif, faktorAktif)); chartInstance.data.datasets = [{ label: namaFaktor[faktorAktif] || faktorAktif, data: dataSet, backgroundColor: 'rgba(30, 74, 118, 0.75)', borderColor: '#1e4a76', borderWidth: 1, borderRadius: 8 }]; chartInstance.update(); }
+        function rataRata(tahun, kolom, kec) { const filtered = semuaData.filter(d => { const matchTahun = String(d.Tahun) === String(tahun); if (kec === "all") return matchTahun && d.Level === "Kecamatan"; return matchTahun && d.Level === "Desa" && d.Kecamatan === kec; }); const values = filtered.map(d => toNumber(d[kolom])).filter(v => !isNaN(v) && v !== "" && v !== null); return values.length ? values.reduce((a,b)=>a+b,0)/values.length : 0; }
+        function hitungDataSetChart(th, kec, field) { const data = semuaData.filter(d=> d.Level==="Desa" && String(d.Tahun)===String(th) && (kec==="all" || d.Kecamatan===kec)); if (field==="D/S") { const values = data.map(d=>toNumber(d[field])).filter(v=>v>0); return values.length ? (values.reduce((a,b)=>a+b,0)/values.length)*100 : 0; } return data.reduce((acc,d)=>acc+toNumber(d[field]),0); }
+        function bindFeatureInteraction(f, l, isKec) { const name = f.properties[isKec ? 'WADMKC' : 'WADMKD']; if (!name) return; const stats = getWilayahNutrisi(name, isKec); const tooltipHtml = `<div class="tooltip-title">${name}</div><div class="tooltip-grid"><div class="tooltip-box ${getBadgeClass('stunting ', stats.st)}"><span class="tooltip-box-label">Stunting </span><span class="tooltip-box-value">${stats.st.toFixed(1)}%</span></div><div class="tooltip-box ${getBadgeClass('wasting ', stats.wa)}"><span class="tooltip-box-label">Wasting </span><span class="tooltip-box-value">${stats.wa.toFixed(1)}%</span></div><div class="tooltip-box ${getBadgeClass('underweight ', stats.un)}"><span class="tooltip-box-label">Underweight </span><span class="tooltip-box-value">${stats.un.toFixed(1)}%</span></div><div class="tooltip-box ${getBadgeClass('overweight ', stats.ov)}"><span class="tooltip-box-label">Overweight </span><span class="tooltip-box-value">${stats.ov.toFixed(1)}%</span></div></div>`; l.bindTooltip(tooltipHtml, { sticky: true }); l.on("mouseover", (e)=> e.target.setStyle({ fillOpacity: 0.95, weight: 2, color: '#1e4a76' })); l.on("mouseout", (e)=> e.target.setStyle({ fillOpacity: 0.85, weight: 1.5, color: '#fff' })); l.on("click", () => { const detailData = semuaData.filter(d => (isKec ? d.Kecamatan === name : d["DESA/KELURAHAN"] === name) && d.Level === "Desa" && String(d.Tahun) === String(tahunAktif)); bukaModalDetail(name, detailData); }); }
+        function getWilayahNutrisi(name, isKec) { const filtered = semuaData.filter(d => { const matchName = isKec ? normal(d.Kecamatan) === normal(name) : normal(d["DESA/KELURAHAN"]) === normal(name); return matchName && d.Level === "Desa" && String(d.Tahun) === String(tahunAktif); }); if (filtered.length===0) return { st:0, wa:0, un:0, ov:0 }; const sum = { st:0, wa:0, un:0, ov:0, count:0 }; filtered.forEach(d=>{ sum.st+=toNumber(d["%Stunting"]); sum.wa+=toNumber(d["%Wasting"]); sum.un+=toNumber(d["%Underweight"]); sum.ov+=toNumber(d["%Overweight"]); sum.count++; }); return { st:(sum.st/sum.count)*100, wa:(sum.wa/sum.count)*100, un:(sum.un/sum.count)*100, ov:(sum.ov/sum.count)*100 }; }
+        
+        // MODIFIED: render indicator card dengan spasi antara label dan value (value di kanan)
+        function renderIndicatorCard(label, value, icon) {
+            return `<div class="col-xl-3 col-lg-4 col-sm-6">
+                        <div class="indicator-card">
+                            <div class="indicator-icon-wrapper">
+                                <i class="bi ${icon}"></i>
+                            </div>
+                            <div class="indicator-info">
+                                <span class="indicator-label">${label}</span>
+                                <span class="indicator-value">${value}</span>
+                            </div>
+                        </div>
+                    </div>`;
+        }
+        
+        function bukaModalDetail(title, data) { 
+            document.getElementById("judulModal").innerText = "Detail Wilayah: " + title; 
+            if (!data || data.length===0) { document.getElementById("modalBody").innerHTML = `<div class="p-4 text-center">Tidak ada data detail ditemukan</div>`; new bootstrap.Modal('#modalDetail').show(); return; } 
+            const groups = {}; 
+            data.forEach(d=>{ const key = `${d.PUSKESMAS}_${d["DESA/KELURAHAN"]}`; if(!groups[key]) groups[key]={ Pusk:d.PUSKESMAS, Desa:d["DESA/KELURAHAN"], ds:0, sk:0, kr:0, bbn:0, rl:0, sp:0, pd:0, tbn:0, tg:0, gb:0, gk:0, gn:0, rgl:0, gl:0, ob:0, count:0 }; const g = groups[key]; g.ds+=toNumber(d["D/S"]); g.sk+=toNumber(d["Sangat Kurang"]); g.kr+=toNumber(d["Kurang"]); g.bbn+=toNumber(d["Berat Badan Normal"]); g.rl+=toNumber(d["Risiko Lebih"]); g.sp+=toNumber(d["Sangat Pendek"]); g.pd+=toNumber(d["Pendek"]); g.tbn+=toNumber(d.Normal); g.tg+=toNumber(d.Tinggi); g.gb+=toNumber(d["Gizi Buruk"]); g.gk+=toNumber(d["Gizi Kurang"]); g.gn+=toNumber(d.Normal_1); g.rgl+=toNumber(d["Risiko Gizi Lebih"]); g.gl+=toNumber(d["Gizi Lebih"]); g.ob+=toNumber(d.Obesitas); g.count++; }); 
+            const uniqueDesa = Object.values(groups); 
+            if(uniqueDesa.length===1){ 
+                const v=uniqueDesa[0]; 
+                const dsPercentage = (v.ds/v.count*100).toFixed(1)+"%"; 
+                const cardViewHtml = `<div class="px-3 pb-3">
+                    <div class="alert alert-light border-0 bg-light d-flex justify-content-between align-items-center mb-4 rounded-4">
+                        <div><small class="text-muted d-block fw-bold" style="font-size:10px;">Puskesmas</small><span class="fw-bold text-primary">${v.Pusk}</span></div>
+                        <div class="text-end"><small class="text-muted d-block fw-bold">Partisipasi (D/S)</small><span class="badge bg-primary fs-6">${dsPercentage}</span></div>
+                    </div>
+                    <div class="modal-category-title"><i class="bi bi-scale"></i> Berat Badan menurut Umur (BB/U)</div>
+                    <div class="row g-3 mb-4">
+                        ${renderIndicatorCard("Sangat Kurang", v.sk, "bi-thermometer-low")}
+                        ${renderIndicatorCard("Kurang", v.kr, "bi-thermometer-half")}
+                        ${renderIndicatorCard("Normal", v.bbn, "bi-check-circle")}
+                        ${renderIndicatorCard("Risiko Lebih", v.rl, "bi-exclamation-triangle")}
+                    </div>
+                    <div class="modal-category-title"><i class="bi bi-rulers"></i> Tinggi Badan menurut Umur (TB/U)</div>
+                    <div class="row g-3 mb-4">
+                        ${renderIndicatorCard("Sangat Pendek", v.sp, "bi-chevron-double-down")}
+                        ${renderIndicatorCard("Pendek", v.pd, "bi-chevron-down")}
+                        ${renderIndicatorCard("Normal", v.tbn, "bi-check-circle")}
+                        ${renderIndicatorCard("Tinggi", v.tg, "bi-chevron-up")}
+                    </div>
+                    <div class="modal-category-title"><i class="bi bi-heart-pulse"></i> Status Gizi (BB/TB)</div>
+                    <div class="row g-3">
+                        ${renderIndicatorCard("Gizi Buruk", v.gb, "bi-shield-x")}
+                        ${renderIndicatorCard("Gizi Kurang", v.gk, "bi-shield-exclamation")}
+                        ${renderIndicatorCard("Gizi Normal", v.gn, "bi-shield-check")}
+                        ${renderIndicatorCard("Risiko Lebih", v.rgl, "bi-plus-circle")}
+                        ${renderIndicatorCard("Gizi Lebih", v.gl, "bi-plus-square")}
+                        ${renderIndicatorCard("Obesitas", v.ob, "bi-person-fill-exclamation")}
+                    </div>
+                </div>`; 
+                document.getElementById("modalBody").innerHTML = cardViewHtml; 
+            } else { 
+                const tableHtml = `<div class="table-responsive"><table class="table table-bordered table-hover align-middle mb-0"><thead class="bg-light"><tr style="font-size:11px;"><th>Puskesmas</th><th>Desa</th><th>D/S (%)</th><th>S.Kurang</th><th>Kurang</th><th>Normal</th><th>R.Lebih</th><th>S.Pendek</th><th>Pendek</th><th>Normal</th><th>Tinggi</th><th>G.Buruk</th><th>G.Kurang</th><th>G.Normal</th><th>R.G.Lebih</th><th>G.Lebih</th><th>Obest.</th></tr></thead><tbody>${uniqueDesa.sort((a,b)=> a.Desa.localeCompare(b.Desa)).map(g => `<tr><td class="small">${g.Pusk}</td><td class="fw-bold">${g.Desa}</td><td>${(g.ds/g.count*100).toFixed(1)}%</td><td>${g.sk}</td><td>${g.kr}</td><td>${g.bbn}</td><td>${g.rl}</td><td>${g.sp}</td><td>${g.pd}</td><td>${g.tbn}</td><td>${g.tg}</td><td>${g.gb}</td><td>${g.gk}</td><td>${g.gn}</td><td>${g.rgl}</td><td>${g.gl}</td><td>${g.ob}</td></tr>`).join("")}</tbody></table></div>`; 
+                document.getElementById("modalBody").innerHTML = tableHtml; 
+            } 
+            new bootstrap.Modal('#modalDetail').show(); 
+        }
+        
+        function initMap() { mapInstance = L.map('map').setView([-8.1, 112.2], 10); L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; CartoDB' }).addTo(mapInstance); }
+        function initChart() { chartInstance = new Chart(document.getElementById('chartGizi'), { type: 'bar', data: { labels: ['2024','2025','2026'], datasets: [] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: "#eef2f6" } } } } }); }
+        function getColor(p) { return p >= 30 ? "#2c3e66" : p >= 20 ? "#3b6e9e" : p >= 15 ? "#5b8cbd" : p >= 10 ? "#8bb3d4" : p > 0 ? "#bdd4e7" : "#e6f0fa"; }
+        function getKategori(nama, p) { if (nama === "stunting") return p < 10 ? "sr" : (p < 15 ? "r" : (p < 20 ? "m" : (p < 30 ? "t" : "st"))); if (nama === "underweight") return p < 5 ? "r" : (p < 10 ? "m" : (p < 15 ? "t" : "st")); return p < 2.5 ? "sr" : (p < 5 ? "r" : (p < 10 ? "m" : (p < 15 ? "t" : "st"))); }
+        function normal(t) { return t ? t.toLowerCase().replace(/desa|kelurahan|\s/g, '').trim() : ""; }
+        function toNumber(v) { if (v === "" || v === null || v === undefined) return 0; const parsed = parseFloat(String(v).replace(/[%,]/g, m => m === ',' ? '.' : '')); return isNaN(parsed) ? 0 : parsed; }
+        function cekBulanTerakhir(th) { const bulanList = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]; let res = ""; bulanList.forEach(b => { if (semuaData.some(d => d.Tahun == th && d.Bulan == b && d.Level == "Kabupaten" && toNumber(d["%Stunting"]) > 0)) res = b; }); return res; }
+        document.addEventListener("DOMContentLoaded", initApp);
+    </script>
+</body>
+</html>
