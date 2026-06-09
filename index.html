@@ -4,16 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard Gizi Kabupaten Blitar | Satu Data Gizi</title>
-    <!-- Modern Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <!-- CSS Frameworks -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
-    <!-- UI Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -57,6 +54,8 @@
             z-index: 1000;
             transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
         }
         .main-content {
             flex: 1;
@@ -149,16 +148,17 @@
             box-shadow: 0 2px 6px rgba(30, 74, 118, 0.2);
         }
         .btn-year {
-            border-radius: 40px;
-            padding: 8px 20px;
-            font-weight: 500;
-            margin-right: 10px;
-            margin-bottom: 8px;
-            border: 1px solid #e2e8f0;
-            background: white;
-            color: var(--text-main);
-            transition: all 0.2s;
-        }
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: var(--text-main);
+    transition: all 0.2s;
+}
         .btn-year:hover { background: #f8fafc; border-color: #cbd5e1; }
         #map { height: 450px; border-radius: var(--radius); z-index: 1; box-shadow: var(--shadow-sm); }
         .table-container { max-height: 450px; overflow-y: auto; scrollbar-width: thin; }
@@ -191,15 +191,44 @@
             color: var(--text-main);
             border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: 20px;
-            padding: 14px 18px;
+            padding: 8px 12px;
             box-shadow: var(--shadow-lg);
-            min-width: 240px;
+            min-width: 200px;
+            max-width: 260px;
+            width: auto;
+            white-space: normal;
+            word-break: break-word;
             font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            line-height: 1.35;
         }
-        .tooltip-title { font-weight: 800; font-size: 1rem; color: #1e293b; text-align: center; margin-bottom: 12px; display: block; }
-        .tooltip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .tooltip-box { padding: 8px 6px; border-radius: 14px; text-align: center; }
-        .tooltip-box-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; opacity: 0.8; }
+        .tooltip-title {
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: #1e293b;
+            text-align: center;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .tooltip-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+        .tooltip-box {
+            padding: 4px 6px;
+            border-radius: 14px;
+            text-align: center;
+            background: #f8fafc;
+        }
+        .tooltip-box-label {
+            font-size: 0.55rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            opacity: 0.8;
+            display: block;
+            margin-bottom: 2px;
+        }
         .form-check {
             padding: 12px 12px 12px 40px;
             margin-bottom: 8px;
@@ -285,8 +314,13 @@
             color: transparent;
             display: inline-block;
         }
-        .badge { font-weight: 600; padding: 6px 12px; border-radius: 40px; font-size: 0.7rem; }
-        /* Sidebar logo sederhana (hanya teks) */
+        .badge {
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.62rem;
+    letter-spacing: 0.02em;
+}
         .sidebar-logo-simple {
             display: flex;
             align-items: center;
@@ -313,369 +347,454 @@
             margin: 20px 0 16px 0;
             border-left: 3px solid var(--primary);
         }
+        
+        .glossary-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #1e4a76;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-decoration: none;
+            background: transparent;
+            border: none;
+            padding: 4px 0;
+            margin: 12px 0 8px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .glossary-link i {
+            font-size: 0.85rem;
+            transition: transform 0.2s;
+        }
+        .glossary-link:hover {
+            color: #0f2b40;
+            text-decoration: underline;
+        }
+        .glossary-link:hover i {
+            transform: translateX(3px);
+        }
+        /* Glosarium alfabet */
+        .glossary-alphabet {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1e4a76;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 2px solid rgba(30, 74, 118, 0.2);
+            padding-bottom: 0.25rem;
+        }
+        .glossary-alphabet:first-of-type {
+            margin-top: 0;
+        }
+        .glossary-term-item {
+            margin-bottom: 0.9rem;
+            padding-left: 0.5rem;
+        }
+        .glossary-term-name {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 0.9rem;
+        }
+        .glossary-term-desc {
+            font-size: 0.8rem;
+            color: #475569;
+            margin-top: 0.2rem;
+            margin-left: 1rem;
+            line-height: 1.4;
+        }
+        /* Legenda warna di bawah tabel */
+        .legend-bar {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .legend-color-box {
+            width: 32px;
+            height: 20px;
+            border-radius: 4px;
+            cursor: help;
+            transition: transform 0.1s;
+        }
+        .legend-color-box:hover {
+            transform: scale(1.1);
+            filter: brightness(0.95);
+        }
     </style>
 </head>
 <body>
 <div class="dashboard-wrapper">
-    <!-- Sidebar dengan logo sederhana (tanpa gambar kabupaten) -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-logo-simple mb-3 pb-1 border-bottom">
-            <div class="sidebar-icon">
-                <i class="bi bi-activity"></i>
-            </div>
-            <div>
-                <h5 class="mb-0 fw-bold" style="color: #0f172a;">GiziBlitar</h5>
-                <small class="text-muted" style="font-size: 0.7rem;">Monitoring Dashboard</small>
-            </div>
+            <div class="sidebar-icon"><i class="bi bi-activity"></i></div>
+            <div><h5 class="mb-0 fw-bold">GiziBlitar</h5><small class="text-muted">Monitoring Dashboard</small></div>
         </div>
         <div class="sidebar-description">
-            <i class="bi bi-info-circle-fill me-1" style="font-size: 0.65rem;"></i> Dashboard ini menyajikan visualisasi data status gizi balita di Kabupaten Blitar sebagai sarana pemantauan kondisi gizi serta mendukung pengambilan keputusan dalam upaya peningkatan kesehatan anak.
+            <i class="bi bi-info-circle-fill me-1"></i> Dashboard ini menyajikan visualisasi data status gizi balita di Kabupaten Blitar sebagai sarana pemantauan kondisi gizi.
         </div>
+        <!-- Link Glosarium -->
+       
         <div class="filter-section">
             <span class="filter-label"><i class="bi bi-calendar3 me-1"></i> Pilih Tahun Analisis</span>
             <div class="d-flex flex-wrap" id="tahun-filter">
-                <input type="radio" class="btn-check" name="tahun" id="th2024" data-tahun="2024" checked>
-                <label class="btn btn-year tahun-btn" for="th2024" data-tahun="2024">2024</label>
-                <input type="radio" class="btn-check" name="tahun" id="th2025" data-tahun="2025">
-                <label class="btn btn-year tahun-btn" for="th2025" data-tahun="2025">2025</label>
-                <input type="radio" class="btn-check" name="tahun" id="th2026" data-tahun="2026">
-                <label class="btn btn-year tahun-btn" for="th2026" data-tahun="2026">2026</label>
+                <input type="radio" class="btn-check" name="tahun" id="th2024" data-tahun="2024" checked><label class="btn btn-year" for="th2024">2024</label>
+                <input type="radio" class="btn-check" name="tahun" id="th2025" data-tahun="2025"><label class="btn btn-year" for="th2025">2025</label>
+                <input type="radio" class="btn-check" name="tahun" id="th2026" data-tahun="2026"><label class="btn btn-year" for="th2026">2026</label>
             </div>
         </div>
         <div class="filter-section">
             <span class="filter-label"><i class="bi bi-geo-alt me-1"></i> Penyebaran Wilayah</span>
-            <select id="filterKecamatanCentral" class="form-select border-0 bg-light rounded-3" placeholder="Pilih Kecamatan...">
-                <option value="all">Semua Kecamatan</option>
-            </select>
+            <select id="filterKecamatanCentral" class="form-select border-0 bg-light rounded-3"><option value="all">Semua Kecamatan</option></select>
         </div>
         <div class="mt-auto pt-4 text-center">
             <p class="small text-muted mb-0">Status: <span class="text-success fw-semibold">● Live Data</span></p>
             <p id="catatanBulan" class="small text-muted mt-2" style="font-size: 10px;"></p>
         </div>
+         <a class="glossary-link" data-bs-toggle="modal" data-bs-target="#glossaryModal"><i class="bi bi-arrow-right-circle"></i> Glosarium </a>
     </aside>
 
     <main class="main-content">
         <header class="d-flex justify-content-between align-items-center">
-            <div>
-                <h2 class="mb-1" id="mainTitle">Dashboard Monitoring Gizi</h2>
-                <p class="text-muted mb-0">Visualisasi status gizi balita Kabupaten Blitar Tahun <span id="tahunJudul" class="fw-bold text-primary"></span></p>
-            </div>
-            <button class="btn btn-light shadow-sm border d-lg-none rounded-3" onclick="document.getElementById('sidebar').classList.toggle('active')">
-                <i class="bi bi-list"></i>
-            </button>
+            <div><h2 class="mb-1" id="mainTitle">Dashboard Monitoring Gizi</h2><p class="text-muted mb-0">Visualisasi status gizi balita Kabupaten Blitar Tahun <span id="tahunJudul" class="fw-bold text-primary"></span></p></div>
+            <button class="btn btn-light shadow-sm border d-lg-none rounded-3" onclick="document.getElementById('sidebar').classList.toggle('active')"><i class="bi bi-list"></i></button>
         </header>
 
+        <!-- Kartu Statistik -->
         <div class="row g-4 mb-4">
-            <div class="col-md-3">
-                <div class="card h-100 border-0">
-                    <div class="stat-card">
-                        <div class="stat-icon icon-stunting"><i class="bi bi-person-down"></i></div>
-                        <h6>Stunting</h6>
-                        <h2 id="stuntingValue">0%</h2>
-                        <p id="stuntingTrend" class="small fw-semibold mb-3"></p>
-                        <table class="table table-sm kategori-table mb-0">
-                            <tr id="stunting-sr"><td>Sangat Rendah</td><td class="text-end">&lt; 10</td></tr>
-                            <tr id="stunting-r"><td>Rendah</td><td class="text-end">10 - 15</td></tr>
-                            <tr id="stunting-m"><td>Medium</td><td class="text-end">15 - 20</td></tr>
-                            <tr id="stunting-t"><td>Tinggi</td><td class="text-end">20 - 30</td></tr>
-                            <tr id="stunting-st"><td>Sangat Tinggi</td><td class="text-end">≥ 30</td></tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100 border-0">
-                    <div class="stat-card">
-                        <div class="stat-icon icon-wasting"><i class="bi bi-bar-chart-steps"></i></div>
-                        <h6>Wasting</h6>
-                        <h2 id="wastingValue">0%</h2>
-                        <p id="wastingTrend" class="small fw-semibold mb-3"></p>
-                        <table class="table table-sm kategori-table mb-0">
-                            <tr id="wasting-sr"><td>Sangat Rendah</td><td class="text-end">&lt; 2.5</td></tr>
-                            <tr id="wasting-r"><td>Rendah</td><td class="text-end">2.5 - 5</td></tr>
-                            <tr id="wasting-m"><td>Medium</td><td class="text-end">5 - 10</td></tr>
-                            <tr id="wasting-t"><td>Tinggi</td><td class="text-end">10 - 15</td></tr>
-                            <tr id="wasting-st"><td>Sangat Tinggi</td><td class="text-end">≥ 15</td></tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100 border-0">
-                    <div class="stat-card">
-                        <div class="stat-icon icon-underweight"><i class="bi bi-graph-down-arrow"></i></div>
-                        <h6>Underweight</h6>
-                        <h2 id="underweightValue">0%</h2>
-                        <p id="underweightTrend" class="small fw-semibold mb-3"></p>
-                        <table class="table table-sm kategori-table mb-0">
-                            <tr id="underweight-r"><td>Rendah</td><td class="text-end">&lt; 5</td></tr>
-                            <tr id="underweight-m"><td>Medium</td><td class="text-end">5 - 10</td></tr>
-                            <tr id="underweight-t"><td>Tinggi</td><td class="text-end">10 - 15</td></tr>
-                            <tr id="underweight-st"><td>Sangat Tinggi</td><td class="text-end">≥ 15</td></tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100 border-0">
-                    <div class="stat-card">
-                        <div class="stat-icon icon-overweight"><i class="bi bi-graph-up-arrow"></i></div>
-                        <h6>Overweight</h6>
-                        <h2 id="overweightValue">0%</h2>
-                        <p id="overweightTrend" class="small fw-semibold mb-3"></p>
-                        <table class="table table-sm kategori-table mb-0">
-                            <tr id="overweight-sr"><td>Sangat Rendah</td><td class="text-end">&lt; 2.5</td></tr>
-                            <tr id="overweight-r"><td>Rendah</td><td class="text-end">2.5 - 5</td></tr>
-                            <tr id="overweight-m"><td>Medium</td><td class="text-end">5 - 10</td></tr>
-                            <tr id="overweight-t"><td>Tinggi</td><td class="text-end">10 - 15</td></tr>
-                            <tr id="overweight-st"><td>Sangat Tinggi</td><td class="text-end">≥ 15</td></tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            <div class="col-md-3"><div class="card h-100 border-0"><div class="stat-card"><div class="stat-icon icon-stunting"><i class="bi bi-person-down"></i></div><h6>Stunting</h6><h2 id="stuntingValue">0%</h2><p id="stuntingTrend" class="small fw-semibold mb-3"></p><table class="table table-sm kategori-table mb-0"><tr id="stunting-sr"><td>Sangat Rendah</td><td class="text-end">&lt; 10</td></tr><tr id="stunting-r"><td>Rendah</td><td class="text-end">10 - 15</td></tr><tr id="stunting-m"><td>Medium</td><td class="text-end">15 - 20</td></tr><tr id="stunting-t"><td>Tinggi</td><td class="text-end">20 - 30</td></tr><tr id="stunting-st"><td>Sangat Tinggi</td><td class="text-end">≥ 30</td></tr></table></div></div></div>
+            <div class="col-md-3"><div class="card h-100 border-0"><div class="stat-card"><div class="stat-icon icon-wasting"><i class="bi bi-bar-chart-steps"></i></div><h6>Wasting</h6><h2 id="wastingValue">0%</h2><p id="wastingTrend" class="small fw-semibold mb-3"></p><table class="table table-sm kategori-table mb-0"><tr id="wasting-sr"><td>Sangat Rendah</td><td class="text-end">&lt; 2.5</td></tr><tr id="wasting-r"><td>Rendah</td><td class="text-end">2.5 - 5</td></tr><tr id="wasting-m"><td>Medium</td><td class="text-end">5 - 10</td></tr><tr id="wasting-t"><td>Tinggi</td><td class="text-end">10 - 15</td></tr><tr id="wasting-st"><td>Sangat Tinggi</td><td class="text-end">≥ 15</td></tr></table></div></div></div>
+            <div class="col-md-3"><div class="card h-100 border-0"><div class="stat-card"><div class="stat-icon icon-underweight"><i class="bi bi-graph-down-arrow"></i></div><h6>Underweight</h6><h2 id="underweightValue">0%</h2><p id="underweightTrend" class="small fw-semibold mb-3"></p><table class="table table-sm kategori-table mb-0"><tr id="underweight-r"><td>Rendah</td><td class="text-end">&lt; 5</td></tr><tr id="underweight-m"><td>Medium</td><td class="text-end">5 - 10</td></tr><tr id="underweight-t"><td>Tinggi</td><td class="text-end">10 - 15</td></tr><tr id="underweight-st"><td>Sangat Tinggi</td><td class="text-end">≥ 15</td></tr></table></div></div></div>
+            <div class="col-md-3"><div class="card h-100 border-0"><div class="stat-card"><div class="stat-icon icon-overweight"><i class="bi bi-graph-up-arrow"></i></div><h6>Overweight</h6><h2 id="overweightValue">0%</h2><p id="overweightTrend" class="small fw-semibold mb-3"></p><table class="table table-sm kategori-table mb-0"><tr id="overweight-sr"><td>Sangat Rendah</td><td class="text-end">&lt; 2.5</td></tr><tr id="overweight-r"><td>Rendah</td><td class="text-end">2.5 - 5</td></tr><tr id="overweight-m"><td>Medium</td><td class="text-end">5 - 10</td></tr><tr id="overweight-t"><td>Tinggi</td><td class="text-end">10 - 15</td></tr><tr id="overweight-st"><td>Sangat Tinggi</td><td class="text-end">≥ 15</td></tr></table></div></div></div>
         </div>
 
+        <!-- Peta dan Tabel Wilayah -->
         <div class="row mb-4">
-            <div class="col-xl-5 col-lg-6">
-                <div class="card h-100 border-0">
-                    <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0">
-                        <h5 class="mb-1 fw-semibold" id="judulDashboard1">Peta Distribusi</h5>
-                        <p class="text-muted small mb-0">Klik wilayah untuk melihat detail data</p>
-                    </div>
-                    <div class="card-body p-4">
-                        <div id="map"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-7 col-lg-6">
-                <div class="card h-100 border-0">
-                    <div class="card-header bg-transparent border-0 py-3 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
-                        <h5 class="mb-0 fw-semibold">Data Wilayah</h5>
-                        <div class="input-group input-group-sm" style="max-width: 260px;">
-                            <span class="input-group-text bg-light border-end-0 rounded-start-3"><i class="bi bi-search text-muted"></i></span>
-                            <input type="text" id="tabelSearch" class="form-control bg-light border-start-0 rounded-end-3" placeholder="Cari wilayah...">
-                        </div>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-container">
-                            <table class="table table-hover mb-0 align-middle">
-                                <thead>
-                                    <tr><th>Kecamatan</th><th>Puskesmas</th><th>Desa/Kelurahan</th><th class="text-center">Stunting</th><th class="text-center">Wasting</th><th class="text-center">Underweight</th><th class="text-center">Overweight</th><th class="text-center">Aksi</th></tr>
-                                </thead>
-                                <tbody id="tabel-gizi"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="col-xl-5 col-lg-6"><div class="card h-100 border-0"><div class="card-header bg-transparent border-0 pt-4 px-4 pb-0"><h5 class="mb-1 fw-semibold">Peta Distribusi</h5><p class="text-muted small mb-0">Klik wilayah untuk melihat detail data</p></div><div class="card-body p-4"><div id="map"></div></div></div></div>
+            <div class="col-xl-7 col-lg-6"><div class="card h-100 border-0"><div class="card-header bg-transparent border-0 py-3 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2"><h5 class="mb-0 fw-semibold">Data Wilayah</h5><div class="input-group input-group-sm" style="max-width: 260px;"><span class="input-group-text bg-light border-end-0 rounded-start-3"><i class="bi bi-search text-muted"></i></span><input type="text" id="tabelSearch" class="form-control bg-light border-start-0 rounded-end-3" placeholder="Cari wilayah..."></div></div>
+                <div class="card-body p-0"><div class="table-container"><table class="table table-hover mb-0 align-middle"><thead><tr><th>Kecamatan</th><th>Puskesmas</th><th>Desa/Kelurahan</th><th class="text-center">Stunting</th><th class="text-center">Wasting</th><th class="text-center">Underweight</th><th class="text-center">Overweight</th><th class="text-center">Aksi</th></tr></thead><tbody id="tabel-gizi"></tbody></table></div>
+                <div class="border-top p-2 bg-light"><div class="fw-semibold mb-1 text-uppercase" style="font-size: 0.62rem; letter-spacing:0.08em;">Keterangan Warna:</div><div class="d-flex flex-wrap gap-1 align-items-center"><span class="badge bg-success px-3 py-2" title="Sangat Rendah (&lt;2.5% untuk wasting/overweight, &lt;10% stunting, &lt;5% underweight)">Sangat Rendah</span><span class="badge bg-info px-3 py-2 text-dark" title="Rendah">Rendah</span><span class="badge bg-warning px-3 py-2 text-dark" title="Medium">Medium</span><span class="badge bg-danger px-3 py-2" title="Tinggi">Tinggi</span><span class="badge bg-dark text-white px-3 py-2" title="Sangat Tinggi / Tidak ada kasus">0% atau Sangat Tinggi</span></div><div class="text-muted mt-1" style="font-size:0.62rem;">⚠️ Catatan: Warna hitam (0%) menandakan tidak ada kasus. Ambang batas kategori berbeda tiap indikator – lihat tabel di kartu statistik.</div></div>
+            </div></div></div>
         </div>
 
-        <div class="modal fade" id="modalDetail" tabindex="-1">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content border-0 shadow-lg rounded-4">
-                    <div class="modal-header bg-light border-0 rounded-top-4"><h5 class="modal-title" id="judulModal">Detail Wilayah</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                    <div class="modal-body" id="modalBody"></div>
-                </div>
-            </div>
-        </div>
+        <!-- Modal Glosarium (Urut Abjad) -->
+        <div class="modal fade" id="glossaryModal" tabindex="-1"><div class="modal-dialog modal-lg modal-dialog-scrollable"><div class="modal-content rounded-4 border-0 shadow-lg"><div class="modal-header bg-primary text-white border-0 rounded-top-4"><h5 class="modal-title fw-bold"><i class="bi bi-sort-alpha-down me-2"></i>Glosarium Indikator Gizi (A-Z)</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body p-4">
+            <div class="glossary-alphabet">B</div><div class="glossary-term-item"><div class="glossary-term-name">Berat Badan Normal</div><div class="glossary-term-desc">Kategori balita dengan berat badan sesuai standar pertumbuhan menurut umur (BB/U).</div></div>
+            <div class="glossary-alphabet">D</div><div class="glossary-term-item"><div class="glossary-term-name">D/S</div><div class="glossary-term-desc">Persentase kehadiran balita ke posyandu. <strong>D</strong> = jumlah balita datang dan ditimbang, <strong>S</strong> = jumlah sasaran balita. Rumus: (D/S) × 100%.</div></div>
+            <div class="glossary-alphabet">G</div><div class="glossary-term-item"><div class="glossary-term-name">Gizi Lebih</div><div class="glossary-term-desc">Kategori balita dengan status berat badan di atas standar (BB/TB).</div></div><div class="glossary-term-item"><div class="glossary-term-name">Gizi Normal</div><div class="glossary-term-desc">Kategori balita dengan status berat badan sesuai standar (BB/TB).</div></div>
+            <div class="glossary-alphabet">K</div><div class="glossary-term-item"><div class="glossary-term-name">Kurang</div><div class="glossary-term-desc">Kategori balita dengan berat badan di bawah standar menurut umur (BB/U).</div></div>
+            <div class="glossary-alphabet">N</div><div class="glossary-term-item"><div class="glossary-term-name">Normal (TB/U atau BB/TB)</div><div class="glossary-term-desc">Kategori balita dengan status pertumbuhan sesuai standar (tinggi badan menurut umur atau berat badan menurut tinggi badan).</div></div>
+            <div class="glossary-alphabet">O</div><div class="glossary-term-item"><div class="glossary-term-name">Obesitas</div><div class="glossary-term-desc">Kategori balita dengan kelebihan berat badan secara signifikan berdasarkan indikator BB/TB.</div></div><div class="glossary-term-item"><div class="glossary-term-name">Overweight</div><div class="glossary-term-desc">Balita dengan status berat badan menurut tinggi badan berada di atas standar normal.</div></div>
+            <div class="glossary-alphabet">P</div><div class="glossary-term-item"><div class="glossary-term-name">Pendek</div><div class="glossary-term-desc">Kategori balita dengan tinggi badan di bawah standar menurut umur (TB/U).</div></div>
+            <div class="glossary-alphabet">R</div><div class="glossary-term-item"><div class="glossary-term-name">Risiko Gizi Lebih</div><div class="glossary-term-desc">Kategori balita yang berisiko mengalami gizi lebih berdasarkan BB/TB.</div></div>
+            <div class="glossary-alphabet">S</div><div class="glossary-term-item"><div class="glossary-term-name">Sangat Kurang</div><div class="glossary-term-desc">Kategori balita dengan berat badan sangat di bawah standar menurut umur (BB/U).</div></div><div class="glossary-term-item"><div class="glossary-term-name">Sangat Pendek</div><div class="glossary-term-desc">Kategori balita dengan tinggi badan sangat di bawah standar menurut umur (TB/U).</div></div><div class="glossary-term-item"><div class="glossary-term-name">Stunting</div><div class="glossary-term-desc">Balita dengan status tinggi badan menurut umur berada di bawah standar (kategori Pendek dan Sangat Pendek).</div></div>
+            <div class="glossary-alphabet">U</div><div class="glossary-term-item"><div class="glossary-term-name">Underweight</div><div class="glossary-term-desc">Balita dengan status berat badan menurut umur berada di bawah standar.</div></div>
+            <div class="glossary-alphabet">W</div><div class="glossary-term-item"><div class="glossary-term-name">Wasting</div><div class="glossary-term-desc">Balita dengan status berat badan menurut tinggi badan berada di bawah standar.</div></div>
+        </div><div class="modal-footer border-0 bg-light rounded-bottom-4"><button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">Tutup</button></div></div></div></div>
 
-        <div class="row mb-4">
-            <div class="col-xl-8 col-lg-7">
-                <div class="card h-100 chart-box border-0">
-                    <div class="card-header bg-transparent border-0 p-0 mb-4 d-flex justify-content-between align-items-center">
-                        <div><h5 class="mb-1 fw-semibold">Tren Status Gizi</h5><p class="text-muted small mb-0">Perbandingan data tahunan berdasarkan indikator</p></div>
-                    </div>
-                    <div class="card-body p-0" style="height: 350px;">
-                        <canvas id="chartGizi"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-4 col-lg-5">
-                <div class="card h-100 border-0">
-                    <div class="card-header bg-transparent border-0 pt-4 px-4 pb-0"><h5 class="mb-1 fw-semibold">Determinan Faktor</h5><p class="text-muted small mb-0">Pilih indikator untuk melihat tren</p></div>
-                    <div class="card-body p-4 overflow-auto" style="max-height: 400px;"><div id="listFaktor" class="d-flex flex-column"></div></div>
-                </div>
-            </div>
-        </div>
+        <!-- Modal Detail Wilayah -->
+        <div class="modal fade" id="modalDetail" tabindex="-1"><div class="modal-dialog modal-xl"><div class="modal-content border-0 shadow-lg rounded-4"><div class="modal-header bg-light border-0 rounded-top-4"><h5 class="modal-title" id="judulModal">Detail Wilayah</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="modalBody"></div></div></div></div>
+
+        <!-- Grafik -->
+        <div class="row mb-4"><div class="col-xl-8 col-lg-7"><div class="card h-100 chart-box border-0"><div class="card-header bg-transparent border-0 p-0 mb-4"><div><h5 class="mb-1 fw-semibold">Tren Status Gizi</h5><p class="text-muted small mb-0">Perbandingan data tahunan berdasarkan indikator</p></div></div><div class="card-body p-0" style="height: 350px;"><canvas id="chartGizi"></canvas></div></div></div><div class="col-xl-4 col-lg-5"><div class="card h-100 border-0"><div class="card-header bg-transparent border-0 pt-4 px-4 pb-0"><h5 class="mb-1 fw-semibold">Determinan Faktor</h5><p class="text-muted small mb-0">Pilih indikator untuk melihat tren</p></div><div class="card-body p-4 overflow-auto" style="max-height: 400px;"><div id="listFaktor" class="d-flex flex-column"></div></div></div></div></div>
     </main>
+</div>
 
-    <script>
-        // Global state
-        let semuaData = [];
-        let tahunAktif = 2024;
-        let kecamatanAktif = "all";
-        let faktorAktif = "D/S";
-        let chartInstance;
-        let mapInstance;
-        let geoLayers = [];
-        let tomSelectInstance;
-        let lastTableData = [];
+<script>
+    // Global state
+    let semuaData = [];
+    let tahunAktif = 2024;
+    let kecamatanAktif = "all";
+    let faktorAktif = "D/S";
+    let chartInstance;
+    let mapInstance;
+    let geoLayers = [];
+    let tomSelectInstance;
+    let lastTableData = [];
 
-        const indikatorList = ["D/S", "Sangat Kurang", "Kurang", "Berat Badan Normal", "Risiko Lebih", "Sangat Pendek", "Pendek", "Normal", "Tinggi", "Gizi Buruk", "Gizi Kurang", "Normal_1", "Risiko Gizi Lebih", "Gizi Lebih", "Obesitas"];
-        const namaFaktor = {
-            "D/S": "D/S", "Sangat Kurang": "Sangat Kurang", "Kurang": "Kurang", "Berat Badan Normal": "BB Normal", "Risiko Lebih": "Risiko Lebih",
-            "Sangat Pendek": "Sangat Pendek", "Pendek": "Pendek", "Normal": "TB Normal", "Tinggi": "Tinggi", "Gizi Buruk": "Gizi Buruk",
-            "Gizi Kurang": "Gizi Kurang", "Normal_1": "Gizi Normal", "Risiko Gizi Lebih": "Risiko Gizi Lebih", "Gizi Lebih": "Gizi Lebih", "Obesitas": "Obesitas"
-        };
+    const indikatorList = ["D/S", "Sangat Kurang", "Kurang", "Berat Badan Normal", "Risiko Lebih", "Sangat Pendek", "Pendek", "Normal", "Tinggi", "Gizi Buruk", "Gizi Kurang", "Normal_1", "Risiko Gizi Lebih", "Gizi Lebih", "Obesitas"];
+    const namaFaktor = { "D/S":"D/S","Sangat Kurang":"Sangat Kurang","Kurang":"Kurang","Berat Badan Normal":"BB Normal","Risiko Lebih":"Risiko Lebih","Sangat Pendek":"Sangat Pendek","Pendek":"Pendek","Normal":"TB Normal","Tinggi":"Tinggi","Gizi Buruk":"Gizi Buruk","Gizi Kurang":"Gizi Kurang","Normal_1":"Gizi Normal","Risiko Gizi Lebih":"Risiko Gizi Lebih","Gizi Lebih":"Gizi Lebih","Obesitas":"Obesitas" };
 
-        async function initApp() {
-            try {
-                const response = await fetch("https://nabila3110.pythonanywhere.com/api/data");
-                const data = await response.json();
-                semuaData = data;
-                initMap();
-                initChart();
-                buildFilters();
-                bindEvents();
-                updateAll();
-            } catch (err) { console.error("Failed to initialize app:", err); }
+    async function initApp() {
+        try {
+            const response = await fetch("https://nabila3110.pythonanywhere.com/api/data");
+            const data = await response.json();
+            semuaData = data;
+            initMap();
+            initChart();
+            buildFilters();
+            bindEvents();
+            updateAll();
+        } catch (err) { console.error("Failed to initialize app:", err); }
+    }
+
+    function buildFilters() {
+        const kecSet = new Set();
+        semuaData.forEach(d => { if(d.Level === "Desa") kecSet.add(d.Kecamatan); });
+        const sel = document.getElementById("filterKecamatanCentral");
+        [...kecSet].sort().forEach(k => { const opt = document.createElement("option"); opt.value = k; opt.textContent = k; sel.appendChild(opt); });
+        tomSelectInstance = new TomSelect("#filterKecamatanCentral", { create:false, sortField:{field:"text",direction:"asc"}, onChange:(val)=>{ kecamatanAktif=val; updateAll(); } });
+        let html = "";
+        indikatorList.forEach((f,i)=>{ html += `<div class="form-check"><input class="form-check-input" type="radio" name="faktor" id="f${i}" value="${f}" ${i===0?"checked":""}><label class="form-check-label" for="f${i}">${namaFaktor[f]||f}</label></div>`; });
+        document.getElementById("listFaktor").innerHTML = html;
+    }
+
+    function bindEvents() {
+        document.querySelectorAll('input[name="tahun"]').forEach(r => { r.addEventListener("change",(e)=>{ tahunAktif = parseInt(e.target.getAttribute("data-tahun")); updateAll(); }); });
+        document.getElementById("listFaktor").addEventListener("change",(e)=>{ if(e.target.name==="faktor"){ faktorAktif = e.target.value; updateChart(); } });
+        document.getElementById("tabelSearch").addEventListener("input",(e)=>{ buildTable(lastTableData, e.target.value); });
+    }
+
+    function updateAll() { updateDashboard(); updateMapAndTable(); updateChart(); }
+
+    function updateDashboard() {
+        document.getElementById("tahunJudul").innerText = tahunAktif;
+        const area = kecamatanAktif==="all"?"Kabupaten Blitar":"Kecamatan "+kecamatanAktif;
+        document.getElementById("mainTitle").innerText = "Monitoring Gizi: "+area;
+        const prev = tahunAktif-1;
+        const cards=["stunting","wasting","underweight","overweight"];
+        const fieldMap={"stunting":"%Stunting","wasting":"%Wasting","underweight":"%Underweight","overweight":"%Overweight"};
+        cards.forEach(c=>{ const nowVal = rataRata(tahunAktif, fieldMap[c], kecamatanAktif); const prevVal = rataRata(prev, fieldMap[c], kecamatanAktif); updateCardUI(c, nowVal, prevVal); });
+        const bulan = tahunAktif===2026? cekBulanTerakhir(2026):"";
+        document.getElementById("catatanBulan").innerText = bulan?"Data tersedia sampai: "+ bulan:"";
+    }
+
+    function updateCardUI(nama, now, prev) {
+        const valEl = document.getElementById(nama+"Value"); const trendEl = document.getElementById(nama+"Trend");
+        const diff = (now-prev)*100;
+        let display = (now*100).toFixed(2)+"%";
+        if(nama==="underweight" && now===0 && (prev===0||isNaN(prev))) display="0%";
+        valEl.innerText = display;
+        if(tahunAktif===2024||isNaN(prev)||prev===0) trendEl.innerText="";
+        else { let arrow = diff>0.01?"📈 Naik":(diff<-0.01?"📉 Turun":"➖ Stabil"); trendEl.innerText = `${arrow} ${Math.abs(diff).toFixed(2)}% dari thn lalu`; trendEl.className = `small fw-semibold mb-3 ${diff>0.01?'text-danger':(diff<-0.01?'text-success':'text-muted')}`; }
+        document.querySelectorAll(`[id^='${nama}-']`).forEach(r=>r.classList.remove("kat-sr","kat-r","kat-m","kat-t","kat-st"));
+        const cat = getKategori(nama, now*100); const row = document.getElementById(nama+"-"+cat); if(row) row.classList.add("kat-"+cat);
+    }
+
+    function updateMapAndTable() {
+        const dataWil = semuaData.filter(d=> d.Level==="Desa" && String(d.Tahun)===String(tahunAktif) && (kecamatanAktif==="all" || d.Kecamatan===kecamatanAktif));
+        drawMap(kecamatanAktif);
+        lastTableData = dataWil; buildTable(dataWil);
+    }
+
+    function drawMap(kec) {
+        geoLayers.forEach(l=>{ if(mapInstance) mapInstance.removeLayer(l); });
+        geoLayers=[];
+        const isKec = (kec==="all");
+        const file = isKec?"Kecamatan.geojson":`${kec}.geojson`;
+        fetch(file).then(r=>r.json()).then(geo=>{
+            const layer = L.geoJSON(geo, { style:(f)=>{ const name = f.properties[isKec?'WADMKC':'WADMKD']; const stats = getWilayahNutrisi(name, isKec); return { color:"#fff", weight:1.5, fillOpacity:0.85, fillColor:getColor(stats.st) }; }, onEachFeature:(f,l)=>bindFeatureInteraction(f,l,isKec) }).addTo(mapInstance);
+            geoLayers.push(layer); mapInstance.fitBounds(layer.getBounds(), {padding:[20,20]});
+        }).catch(e=>console.warn("GeoJSON error:", e));
+    }
+
+    // TABEL UTAMA (tanpa pewarnaan baris)
+    function buildTable(data, searchTerm) {
+        const hasil = {};
+        data.forEach(d => {
+            const key = `${d.Kecamatan||'?'}_${d.PUSKESMAS||'?'}_${d["DESA/KELURAHAN"]||'?'}`;
+            if(!hasil[key]) hasil[key] = { Kec:d.Kecamatan, Pusk:d.PUSKESMAS, Desa:d["DESA/KELURAHAN"], st:0, wa:0, un:0, ov:0, count:0 };
+            const row = hasil[key];
+            const s = toNumber(d["%Stunting"]), w = toNumber(d["%Wasting"]), u = toNumber(d["%Underweight"]), o = toNumber(d["%Overweight"]);
+            if(s>0||w>0||u>0||o>0) { row.st+=s; row.wa+=w; row.un+=u; row.ov+=o; row.count++; }
+        });
+        const sorted = Object.values(hasil).sort((a,b)=> a.Kec.localeCompare(b.Kec));
+        const filter = (searchTerm || "").toLowerCase();
+        let html = "";
+        sorted.forEach(d => {
+            if(filter && !d.Kec.toLowerCase().includes(filter) && !d.Pusk.toLowerCase().includes(filter) && !d.Desa.toLowerCase().includes(filter)) return;
+            const fmt = (v) => d.count>0 ? (v/d.count*100).toFixed(2)+"%" : "0%";
+            const areaName = d.Desa;
+            html += `<tr>
+                <td>${d.Kec}</td>
+                <td>${d.Pusk}</td>
+                <td>${d.Desa}</td>
+                <td class="text-center"><span class="badge rounded-pill ${getBadgeClass('stunting',(d.st/d.count)*100)}">${fmt(d.st)}</span></td>
+                <td class="text-center"><span class="badge rounded-pill ${getBadgeClass('wasting',(d.wa/d.count)*100)}">${fmt(d.wa)}</span></td>
+                <td class="text-center"><span class="badge rounded-pill ${getBadgeClass('underweight',(d.un/d.count)*100)}">${fmt(d.un)}</span></td>
+                <td class="text-center"><span class="badge rounded-pill ${getBadgeClass('overweight',(d.ov/d.count)*100)}">${fmt(d.ov)}</span></td>
+                <td class="text-center"><button class="btn btn-sm btn-light border rounded-3" onclick="openDetail('${areaName.replace(/'/g, "\\'")}', '${d.Kec.replace(/'/g, "\\'")}')"><i class="bi bi-eye"></i> Detail</button></td>
+            </tr>`;
+        });
+        document.getElementById("tabel-gizi").innerHTML = html || '<tr><td colspan="8" class="text-center py-4 text-muted">Tidak ada data ditemukan</td></tr>';
+    }
+
+    function getBadgeClass(type, p) { const cat = getKategori(type, p); if(cat==='sr') return 'bg-success text-white'; if(cat==='r') return 'bg-info text-dark'; if(cat==='m') return 'bg-warning text-dark'; if(cat==='t') return 'bg-danger text-white'; return 'bg-dark text-white'; }
+
+    function openDetail(name, kec) {
+
+    const detail = semuaData.filter(
+        d => normal(d["DESA/KELURAHAN"])===normal(name)
+        && normal(d.Kecamatan)===normal(kec)
+        && d.Level==="Desa"
+        && String(d.Tahun)===String(tahunAktif)
+    );
+
+    bukaModalDetail(name, detail, "desa");
+}
+
+    function updateChart() { const tahun = ['2024','2025','2026']; const dataSet = tahun.map(th=>hitungDataSetChart(th, kecamatanAktif, faktorAktif)); chartInstance.data.datasets = [{ label: namaFaktor[faktorAktif]||faktorAktif, data: dataSet, backgroundColor:'rgba(30,74,118,0.75)', borderColor:'#1e4a76', borderWidth:1, borderRadius:8 }]; chartInstance.update(); }
+
+    function rataRata(th, kol, kec) { const filtered = semuaData.filter(d=>{ if(kec==="all") return String(d.Tahun)===String(th) && d.Level==="Kecamatan"; return String(d.Tahun)===String(th) && d.Level==="Desa" && d.Kecamatan===kec; }); const vals = filtered.map(d=>toNumber(d[kol])).filter(v=>!isNaN(v)&&v!==""&&v!==null); return vals.length? vals.reduce((a,b)=>a+b,0)/vals.length : 0; }
+
+    function hitungDataSetChart(th, kec, field) { const data = semuaData.filter(d=> d.Level==="Desa" && String(d.Tahun)===String(th) && (kec==="all"||d.Kecamatan===kec)); if(field==="D/S") { const vals = data.map(d=>toNumber(d[field])).filter(v=>v>0); return vals.length? (vals.reduce((a,b)=>a+b,0)/vals.length)*100 : 0; } return data.reduce((a,d)=>a+toNumber(d[field]),0); }
+
+    function bindFeatureInteraction(f,l,isKec) {
+        const name = f.properties[isKec?'WADMKC':'WADMKD']; if(!name) return;
+        const stats = getWilayahNutrisi(name, isKec);
+        const clusterData = semuaData.find(d=> (isKec? d.Kecamatan===name : d["DESA/KELURAHAN"]===name) && String(d.Tahun)===String(tahunAktif));
+        const clusterLabel = clusterData?.Nama_Cluster || "Belum Diklasifikasikan";
+        const tooltipHtml = `<div class="tooltip-title">${name}</div><div class="tooltip-cluster">${clusterLabel}</div><div class="tooltip-grid"><div class="tooltip-box ${getBadgeClass('stunting',stats.st)}"><span class="tooltip-box-label">Stunting</span><span class="tooltip-box-value">${stats.st.toFixed(1)}%</span></div><div class="tooltip-box ${getBadgeClass('wasting',stats.wa)}"><span class="tooltip-box-label">Wasting</span><span class="tooltip-box-value">${stats.wa.toFixed(1)}%</span></div><div class="tooltip-box ${getBadgeClass('underweight',stats.un)}"><span class="tooltip-box-label">Underweight</span><span class="tooltip-box-value">${stats.un.toFixed(1)}%</span></div><div class="tooltip-box ${getBadgeClass('overweight',stats.ov)}"><span class="tooltip-box-label">Overweight</span><span class="tooltip-box-value">${stats.ov.toFixed(1)}%</span></div></div>`;
+        l.bindTooltip(tooltipHtml, { sticky: true });
+        l.on("mouseover", e=>{ e.target.setStyle({ fillOpacity: 0.95, weight: 2, color: '#1e4a76' }); });
+        l.on("mouseout", e=>{ e.target.setStyle({ fillOpacity: 0.85, weight: 1.5, color: '#fff' }); });
+       l.on("click", () => {
+
+    let detailData = [];
+    let level = "desa";
+
+    if (isKec) {
+
+        level = "kecamatan";
+
+        detailData = semuaData.filter(d =>
+            d.Level === "Desa" &&
+            d.Kecamatan === name &&
+            String(d.Tahun) === String(tahunAktif)
+        );
+
+    } else {
+
+        level = "desa";
+
+        detailData = semuaData.filter(d =>
+            d.Level === "Desa" &&
+            normal(d["DESA/KELURAHAN"]) === normal(name) &&
+            String(d.Tahun) === String(tahunAktif)
+        );
+    }
+
+    bukaModalDetail(name, detailData, level);
+});
+    }
+
+    function getWilayahNutrisi(name, isKec) {
+        const filtered = semuaData.filter(d=>{ const match = isKec? normal(d.Kecamatan)===normal(name) : normal(d["DESA/KELURAHAN"])===normal(name); return match && d.Level==="Desa" && String(d.Tahun)===String(tahunAktif); });
+        if(filtered.length===0) return {st:0,wa:0,un:0,ov:0};
+        let sum = {st:0,wa:0,un:0,ov:0,count:0};
+        filtered.forEach(d=>{ sum.st += toNumber(d["%Stunting"]); sum.wa += toNumber(d["%Wasting"]); sum.un += toNumber(d["%Underweight"]); sum.ov += toNumber(d["%Overweight"]); sum.count++; });
+        return { st:(sum.st/sum.count)*100, wa:(sum.wa/sum.count)*100, un:(sum.un/sum.count)*100, ov:(sum.ov/sum.count)*100 };
+    }
+
+    function renderIndicatorCard(label,val,icon){ return `<div class="col-xl-3 col-lg-4 col-sm-6"><div class="indicator-card"><div class="indicator-icon-wrapper"><i class="bi ${icon}"></i></div><div class="indicator-info"><span class="indicator-label">${label}</span><span class="indicator-value">${val}</span></div></div></div>`; }
+
+    // MODAL DETAIL DENGAN PEWARNAAN (hijau, kuning, merah) berdasarkan rata-rata 4 indikator
+     function bukaModalDetail(title, data, level = "desa") {
+        // Tentukan kode wilayah berdasarkan jumlah data
+        let kodeWilayah = "-";
+
+if (data && data.length > 0 && data[0].kode_wilayah) {
+
+    const raw = String(data[0].kode_wilayah);
+
+    if (level === "kecamatan") {
+        kodeWilayah = raw.substring(0, 6);
+    } else {
+        kodeWilayah = raw;
+    }
+}
+        // Tampilkan judul dan kode wilayah
+        document.getElementById("judulModal").innerHTML = `Detail Wilayah: ${title}<br><small class="text-muted">Kode Wilayah : ${kodeWilayah}</small>`;
+
+        if (!data || data.length === 0) {
+            document.getElementById("modalBody").innerHTML = `<div class="p-4 text-center">Tidak ada data detail ditemukan</div>`;
+            new bootstrap.Modal('#modalDetail').show();
+            return;
         }
-
-        function buildFilters() {
-            const kecSet = new Set();
-            semuaData.forEach(d => { if (d.Level === "Desa") kecSet.add(d.Kecamatan); });
-            const selectEl = document.getElementById("filterKecamatanCentral");
-            [...kecSet].sort().forEach(k => { const opt = document.createElement("option"); opt.value = k; opt.textContent = k; selectEl.appendChild(opt); });
-            tomSelectInstance = new TomSelect("#filterKecamatanCentral", { create: false, sortField: { field: "text", direction: "asc" }, onChange: (val) => { kecamatanAktif = val; updateAll(); } });
-            let factorHtml = "";
-            indikatorList.forEach((f, i) => { factorHtml += `<div class="form-check"><input class="form-check-input" type="radio" name="faktor" id="f${i}" value="${f}" ${i === 0 ? "checked" : ""}><label class="form-check-label" for="f${i}">${namaFaktor[f] || f}</label></div>`; });
-            document.getElementById("listFaktor").innerHTML = factorHtml;
+        const groups = {};
+        data.forEach(d => {
+            const key = `${d.PUSKESMAS}_${d["DESA/KELURAHAN"]}`;
+            if (!groups[key]) groups[key] = {
+                Pusk: d.PUSKESMAS, Desa: d["DESA/KELURAHAN"],
+                ds:0, sk:0, kr:0, bbn:0, rl:0, sp:0, pd:0, tbn:0, tg:0,
+                gb:0, gk:0, gn:0, rgl:0, gl:0, ob:0,
+                stTotal:0, waTotal:0, unTotal:0, ovTotal:0, count:0
+            };
+            const g = groups[key];
+            g.ds += toNumber(d["D/S"]); g.sk += toNumber(d["Sangat Kurang"]); g.kr += toNumber(d["Kurang"]); g.bbn += toNumber(d["Berat Badan Normal"]); g.rl += toNumber(d["Risiko Lebih"]);
+            g.sp += toNumber(d["Sangat Pendek"]); g.pd += toNumber(d["Pendek"]); g.tbn += toNumber(d.Normal); g.tg += toNumber(d.Tinggi);
+            g.gb += toNumber(d["Gizi Buruk"]); g.gk += toNumber(d["Gizi Kurang"]); g.gn += toNumber(d.Normal_1); g.rgl += toNumber(d["Risiko Gizi Lebih"]); g.gl += toNumber(d["Gizi Lebih"]); g.ob += toNumber(d.Obesitas);
+            g.stTotal += toNumber(d["%Stunting"]); g.waTotal += toNumber(d["%Wasting"]); g.unTotal += toNumber(d["%Underweight"]); g.ovTotal += toNumber(d["%Overweight"]);
+            g.count++;
+        });
+        let desaArr = Object.values(groups).map(g => {
+            const avgSt = g.stTotal/g.count, avgWa = g.waTotal/g.count, avgUn = g.unTotal/g.count, avgOv = g.ovTotal/g.count;
+            const rata = (avgSt + avgWa + avgUn + avgOv) / 4;
+            return { ...g, avgSt, avgWa, avgUn, avgOv, rata };
+        });
+        if (level === "desa" && desaArr.length === 1) {
+            const v = desaArr[0];
+            const dsPercent = (v.ds/v.count*100).toFixed(1)+"%";
+            const cardHtml = `<div class="px-3 pb-3">
+                <div class="alert alert-light border-0 bg-light d-flex justify-content-between align-items-center mb-4 rounded-4">
+                    <div><small class="text-muted d-block fw-bold">Puskesmas</small><span class="fw-bold text-primary">${v.Pusk}</span></div>
+                    <div class="text-end"><small class="text-muted d-block fw-bold">Partisipasi (D/S)</small><span class="badge bg-primary fs-6">${dsPercent}</span></div>
+                </div>
+                <div class="modal-category-title"><i class="bi bi-scale"></i> Berat Badan menurut Umur (BB/U)</div>
+                <div class="row g-3 mb-4">${renderIndicatorCard("Sangat Kurang", v.sk, "bi-thermometer-low")}${renderIndicatorCard("Kurang", v.kr, "bi-thermometer-half")}${renderIndicatorCard("Normal", v.bbn, "bi-check-circle")}${renderIndicatorCard("Risiko Lebih", v.rl, "bi-exclamation-triangle")}</div>
+                <div class="modal-category-title"><i class="bi bi-rulers"></i> Tinggi Badan menurut Umur (TB/U)</div>
+                <div class="row g-3 mb-4">${renderIndicatorCard("Sangat Pendek", v.sp, "bi-chevron-double-down")}${renderIndicatorCard("Pendek", v.pd, "bi-chevron-down")}${renderIndicatorCard("Normal", v.tbn, "bi-check-circle")}${renderIndicatorCard("Tinggi", v.tg, "bi-chevron-up")}</div>
+                <div class="modal-category-title"><i class="bi bi-heart-pulse"></i> Status Gizi (BB/TB)</div>
+                <div class="row g-3">${renderIndicatorCard("Gizi Buruk", v.gb, "bi-shield-x")}${renderIndicatorCard("Gizi Kurang", v.gk, "bi-shield-exclamation")}${renderIndicatorCard("Gizi Normal", v.gn, "bi-shield-check")}${renderIndicatorCard("Risiko Gizi Lebih", v.rgl, "bi-plus-circle")}${renderIndicatorCard("Gizi Lebih", v.gl, "bi-plus-square")}${renderIndicatorCard("Obesitas", v.ob, "bi-person-fill-exclamation")}</div>
+            </div>`;
+            document.getElementById("modalBody").innerHTML = cardHtml;
+            new bootstrap.Modal('#modalDetail').show();
+            return;
         }
+        // Banyak desa (kecamatan)
+        desaArr.sort((a,b) => a.rata - b.rata);
+        const min = desaArr[0].rata, max = desaArr[desaArr.length-1].rata;
+        let mid; if (desaArr.length % 2 === 1) mid = desaArr[Math.floor(desaArr.length/2)].rata; else mid = (desaArr[desaArr.length/2 -1].rata + desaArr[desaArr.length/2].rata)/2;
+        let rows = "";
+        desaArr.forEach(g => {
+            let rowClass = "";
+            if (Math.abs(g.rata - min) < 0.0001) rowClass = "table-success";
+            else if (Math.abs(g.rata - max) < 0.0001) rowClass = "table-danger";
+            else if (Math.abs(g.rata - mid) < 0.0001 || (desaArr.length%2===0 && (Math.abs(g.rata - desaArr[desaArr.length/2 -1].rata)<0.0001 || Math.abs(g.rata - desaArr[desaArr.length/2].rata)<0.0001))) rowClass = "table-warning";
+            rows += `<tr class="${rowClass}">
+                <td class="small">${g.Pusk}</td>
+                <td class="fw-bold">${g.Desa}</td>
+                <td>${(g.ds/g.count*100).toFixed(1)}%</td>
+                <td>${g.sk}</td><td>${g.kr}</td><td>${g.bbn}</td><td>${g.rl}</td>
+                <td>${g.sp}</td><td>${g.pd}</td><td>${g.tbn}</td><td>${g.tg}</td>
+                <td>${g.gb}</td><td>${g.gk}</td><td>${g.gn}</td>
+                <td>${g.rgl}</td><td>${g.gl}</td><td>${g.ob}</td>
+            </tr>`;
+        });
+        const legendHtml = `<div class="mb-3 d-flex flex-wrap gap-2 align-items-center small border-bottom pb-2">
+            <span class="text-muted ms-2">Keterangan: </span>
+            <span class="badge bg-success">Terendah (hijau)</span>
+            <span class="badge bg-warning text-dark">Sedang (kuning)</span>
+            <span class="badge bg-danger">Tertinggi (merah)</span>
+            <div class="text-muted mt-1" style="font-size:0.62rem;">warna baris berdasarkan rata-rata stunting, wasting, underweight, overweight</div>
+        </div>`;
+        const tableHtml = `<div class="table-responsive"><table class="table table-bordered table-hover align-middle mb-0">
+            <thead class="bg-light"><tr style="font-size:11px;"><th>Puskesmas</th><th>Desa</th><th>D/S (%)</th><th>S.Kurang</th><th>Kurang</th><th>Normal</th><th>R.Lebih</th><th>S.Pendek</th><th>Pendek</th><th>Normal</th><th>Tinggi</th><th>G.Buruk</th><th>G.Kurang</th><th>G.Normal</th><th>R.G.Lebih</th><th>G.Lebih</th><th>Obesitas</th></tr></thead>
+            <tbody>${rows}</tbody>
+        </table></div>${legendHtml}`;
+        document.getElementById("modalBody").innerHTML = tableHtml;
+        new bootstrap.Modal('#modalDetail').show();
+    }
 
-        function bindEvents() {
-            document.querySelectorAll('input[name="tahun"]').forEach(radio => { radio.addEventListener("change", (e) => { tahunAktif = parseInt(e.target.getAttribute("data-tahun")); updateAll(); }); });
-            document.getElementById("listFaktor").addEventListener("change", (e) => { if (e.target.name === "faktor") { faktorAktif = e.target.value; updateChart(); } });
-            document.getElementById("tabelSearch").addEventListener("input", (e) => { buildTable(lastTableData, e.target.value); });
-        }
+    function initMap() { mapInstance = L.map('map').setView([-8.1,112.2],10); L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; CartoDB'}).addTo(mapInstance); }
+    function initChart() { chartInstance = new Chart(document.getElementById('chartGizi'),{ type:'bar', data:{ labels:['2024','2025','2026'], datasets:[] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true, grid:{ color:"#eef2f6" } } } } }); }
+    function getColor(p) { return p >= 30 ? "#2c3e66" : p >= 20 ? "#3b6e9e" : p >= 15 ? "#5b8cbd" : p >= 10 ? "#8bb3d4" : p > 0 ? "#bdd4e7" : "#e6f0fa"; }
+    function getKategori(nama, p) { if(nama==="stunting") return p<10?"sr":(p<15?"r":(p<20?"m":(p<30?"t":"st"))); if(nama==="underweight") return p<5?"r":(p<10?"m":(p<15?"t":"st")); return p<2.5?"sr":(p<5?"r":(p<10?"m":(p<15?"t":"st"))); }
+    function normal(t) { return t? t.toLowerCase().replace(/desa|kelurahan|\s/g,'').trim() : ""; }
+    function toNumber(v) { if(v===""||v===null||v===undefined) return 0; const parsed = parseFloat(String(v).replace(/[%,]/g, m=> m===','?'.':'')); return isNaN(parsed)?0:parsed; }
+    function cekBulanTerakhir(th) { const bulan = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]; let res=""; bulan.forEach(b=>{ if(semuaData.some(d=> d.Tahun==th && d.Bulan==b && d.Level=="Kabupaten" && toNumber(d["%Stunting"])>0)) res=b; }); return res; }
 
-        function updateAll() { updateDashboard(); updateMapAndTable(); updateChart(); }
-
-        function updateDashboard() {
-            document.getElementById("tahunJudul").innerText = tahunAktif;
-            const areaName = kecamatanAktif === "all" ? "Kabupaten Blitar" : "Kecamatan " + kecamatanAktif;
-            document.getElementById("mainTitle").innerText = "Monitoring Gizi: " + areaName;
-            const prevYear = tahunAktif - 1;
-            const cards = ["stunting", "wasting", "underweight", "overweight"];
-            const fieldMap = { "stunting": "%Stunting", "wasting": "%Wasting", "underweight": "%Underweight", "overweight": "%Overweight" };
-            cards.forEach(card => { const nowVal = rataRata(tahunAktif, fieldMap[card], kecamatanAktif); const prevVal = rataRata(prevYear, fieldMap[card], kecamatanAktif); updateCardUI(card, nowVal, prevVal); });
-            const bulan = tahunAktif === 2026 ? cekBulanTerakhir(2026) : "";
-            document.getElementById("catatanBulan").innerText = bulan ? "Data tersedia sampai: " + bulan : "";
-        }
-
-        function updateCardUI(nama, now, prev) {
-            const valueEl = document.getElementById(nama + "Value"); const trendEl = document.getElementById(nama + "Trend");
-            const diff = (now - prev) * 100;
-            let displayValue = (now * 100).toFixed(2) + "%";
-            if (nama === "underweight" && now === 0 && (prev === 0 || isNaN(prev))) displayValue = "0%";
-            valueEl.innerText = displayValue;
-            if (tahunAktif === 2024 || isNaN(prev) || prev === 0) trendEl.innerText = "";
-            else { let arrow = diff > 0.01 ? "📈 Naik" : (diff < -0.01 ? "📉 Turun" : "➖ Stabil"); trendEl.innerText = `${arrow} ${Math.abs(diff).toFixed(2)}% dari ${tahunAktif - 1}`; trendEl.className = `small fw-semibold mb-3 ${diff > 0.01 ? 'text-danger' : (diff < -0.01 ? 'text-success' : 'text-muted')}`; }
-            document.querySelectorAll(`[id^='${nama}-']`).forEach(r => r.classList.remove("kat-sr", "kat-r", "kat-m", "kat-t", "kat-st"));
-            const cat = getKategori(nama, now * 100); const row = document.getElementById(nama + "-" + cat); if (row) row.classList.add("kat-" + cat);
-        }
-
-        function updateMapAndTable() {
-            const dataForWilayah = semuaData.filter(d => d.Level === "Desa" && String(d.Tahun) === String(tahunAktif) && (kecamatanAktif === "all" || d.Kecamatan === kecamatanAktif));
-            drawMap(kecamatanAktif);
-            lastTableData = dataForWilayah; buildTable(dataForWilayah);
-        }
-
-        function drawMap(kec) {
-            geoLayers.forEach(l => { if (mapInstance) mapInstance.removeLayer(l); });
-            geoLayers = [];
-            const isKecMode = (kec === "all");
-            const file = isKecMode ? "Kecamatan.geojson" : `${kec}.geojson`;
-            fetch(file).then(r => r.json()).then(geoData => {
-                const layer = L.geoJSON(geoData, { style: (f) => { const name = f.properties[isKecMode ? 'WADMKC' : 'WADMKD']; const stats = getWilayahNutrisi(name, isKecMode); return { color: "#fff", weight: 1.5, fillOpacity: 0.85, fillColor: getColor(stats.st) }; }, onEachFeature: (f, l) => bindFeatureInteraction(f, l, isKecMode) }).addTo(mapInstance);
-                geoLayers.push(layer); mapInstance.fitBounds(layer.getBounds(), { padding: [20,20] });
-            }).catch(e => console.warn("GeoJSON error:", e));
-        }
-
-        function buildTable(data, searchTerm) {
-            const hasil = {}; data.forEach(d => { const key = `${d.Kecamatan || '?'}_${d.PUSKESMAS || '?'}_${d["DESA/KELURAHAN"] || '?'}`; if (!hasil[key]) hasil[key] = { Kec: d.Kecamatan, Pusk: d.PUSKESMAS, Desa: d["DESA/KELURAHAN"], st: 0, wa: 0, un: 0, ov: 0, count: 0 }; const row = hasil[key]; const s = toNumber(d["%Stunting"]), w = toNumber(d["%Wasting"]), u = toNumber(d["%Underweight"]), o = toNumber(d["%Overweight"]); if (s>0 || w>0 || u>0 || o>0) { row.st += s; row.wa += w; row.un += u; row.ov += o; row.count++; } });
-            const sorted = Object.values(hasil).sort((a,b)=> a.Kec.localeCompare(b.Kec));
-            const filter = (searchTerm || "").toLowerCase(); let html = "";
-            sorted.forEach(d => { if (filter && !d.Kec.toLowerCase().includes(filter) && !d.Pusk.toLowerCase().includes(filter) && !d.Desa.toLowerCase().includes(filter)) return; const fmt = (v) => d.count>0 ? (v/d.count*100).toFixed(2)+"%" : "0%"; const areaName = d.Desa; html += `<tr><td>${d.Kec}</td><td>${d.Pusk}</td><td>${d.Desa}</td><td class="text-center"><span class="badge rounded-pill ${getBadgeClass('stunting',(d.st/d.count)*100)}">${fmt(d.st)}</span></td><td class="text-center"><span class="badge rounded-pill ${getBadgeClass('wasting',(d.wa/d.count)*100)}">${fmt(d.wa)}</span></td><td class="text-center"><span class="badge rounded-pill ${getBadgeClass('underweight',(d.un/d.count)*100)}">${fmt(d.un)}</span></td><td class="text-center"><span class="badge rounded-pill ${getBadgeClass('overweight',(d.ov/d.count)*100)}">${fmt(d.ov)}</span></td><td class="text-center"><button class="btn btn-sm btn-light border rounded-3" onclick="openDetail('${areaName}', '${d.Kec}')"><i class="bi bi-eye"></i> Detail</button></td></tr>`; });
-            document.getElementById("tabel-gizi").innerHTML = html || '<tr><td colspan="8" class="text-center py-4 text-muted">Tidak ada data ditemukan</td></tr>';
-        }
-
-        function getBadgeClass(type, p) { const cat = getKategori(type, p); if (cat === 'sr') return 'bg-success text-white'; if (cat === 'r') return 'bg-info text-dark'; if (cat === 'm') return 'bg-warning text-dark'; if (cat === 't') return 'bg-danger text-white'; return 'bg-dark text-white'; }
-        function openDetail(name, kec) { const detailData = semuaData.filter(d => normal(d["DESA/KELURAHAN"]) === normal(name) && normal(d.Kecamatan) === normal(kec) && d.Level === "Desa" && String(d.Tahun) === String(tahunAktif)); bukaModalDetail(name, detailData); }
-        function updateChart() { const labelArr = ['2024','2025','2026']; const dataSet = labelArr.map(th => hitungDataSetChart(th, kecamatanAktif, faktorAktif)); chartInstance.data.datasets = [{ label: namaFaktor[faktorAktif] || faktorAktif, data: dataSet, backgroundColor: 'rgba(30, 74, 118, 0.75)', borderColor: '#1e4a76', borderWidth: 1, borderRadius: 8 }]; chartInstance.update(); }
-        function rataRata(tahun, kolom, kec) { const filtered = semuaData.filter(d => { const matchTahun = String(d.Tahun) === String(tahun); if (kec === "all") return matchTahun && d.Level === "Kecamatan"; return matchTahun && d.Level === "Desa" && d.Kecamatan === kec; }); const values = filtered.map(d => toNumber(d[kolom])).filter(v => !isNaN(v) && v !== "" && v !== null); return values.length ? values.reduce((a,b)=>a+b,0)/values.length : 0; }
-        function hitungDataSetChart(th, kec, field) { const data = semuaData.filter(d=> d.Level==="Desa" && String(d.Tahun)===String(th) && (kec==="all" || d.Kecamatan===kec)); if (field==="D/S") { const values = data.map(d=>toNumber(d[field])).filter(v=>v>0); return values.length ? (values.reduce((a,b)=>a+b,0)/values.length)*100 : 0; } return data.reduce((acc,d)=>acc+toNumber(d[field]),0); }
-        function bindFeatureInteraction(f, l, isKec) { const name = f.properties[isKec ? 'WADMKC' : 'WADMKD']; if (!name) return; const stats = getWilayahNutrisi(name, isKec); const tooltipHtml = `<div class="tooltip-title">${name}</div><div class="tooltip-grid"><div class="tooltip-box ${getBadgeClass('stunting ', stats.st)}"><span class="tooltip-box-label">Stunting </span><span class="tooltip-box-value">${stats.st.toFixed(1)}%</span></div><div class="tooltip-box ${getBadgeClass('wasting ', stats.wa)}"><span class="tooltip-box-label">Wasting </span><span class="tooltip-box-value">${stats.wa.toFixed(1)}%</span></div><div class="tooltip-box ${getBadgeClass('underweight ', stats.un)}"><span class="tooltip-box-label">Underweight </span><span class="tooltip-box-value">${stats.un.toFixed(1)}%</span></div><div class="tooltip-box ${getBadgeClass('overweight ', stats.ov)}"><span class="tooltip-box-label">Overweight </span><span class="tooltip-box-value">${stats.ov.toFixed(1)}%</span></div></div>`; l.bindTooltip(tooltipHtml, { sticky: true }); l.on("mouseover", (e)=> e.target.setStyle({ fillOpacity: 0.95, weight: 2, color: '#1e4a76' })); l.on("mouseout", (e)=> e.target.setStyle({ fillOpacity: 0.85, weight: 1.5, color: '#fff' })); l.on("click", () => { const detailData = semuaData.filter(d => (isKec ? d.Kecamatan === name : d["DESA/KELURAHAN"] === name) && d.Level === "Desa" && String(d.Tahun) === String(tahunAktif)); bukaModalDetail(name, detailData); }); }
-        function getWilayahNutrisi(name, isKec) { const filtered = semuaData.filter(d => { const matchName = isKec ? normal(d.Kecamatan) === normal(name) : normal(d["DESA/KELURAHAN"]) === normal(name); return matchName && d.Level === "Desa" && String(d.Tahun) === String(tahunAktif); }); if (filtered.length===0) return { st:0, wa:0, un:0, ov:0 }; const sum = { st:0, wa:0, un:0, ov:0, count:0 }; filtered.forEach(d=>{ sum.st+=toNumber(d["%Stunting"]); sum.wa+=toNumber(d["%Wasting"]); sum.un+=toNumber(d["%Underweight"]); sum.ov+=toNumber(d["%Overweight"]); sum.count++; }); return { st:(sum.st/sum.count)*100, wa:(sum.wa/sum.count)*100, un:(sum.un/sum.count)*100, ov:(sum.ov/sum.count)*100 }; }
-        
-        // MODIFIED: render indicator card dengan spasi antara label dan value (value di kanan)
-        function renderIndicatorCard(label, value, icon) {
-            return `<div class="col-xl-3 col-lg-4 col-sm-6">
-                        <div class="indicator-card">
-                            <div class="indicator-icon-wrapper">
-                                <i class="bi ${icon}"></i>
-                            </div>
-                            <div class="indicator-info">
-                                <span class="indicator-label">${label}</span>
-                                <span class="indicator-value">${value}</span>
-                            </div>
-                        </div>
-                    </div>`;
-        }
-        
-        function bukaModalDetail(title, data) { 
-            document.getElementById("judulModal").innerText = "Detail Wilayah: " + title; 
-            if (!data || data.length===0) { document.getElementById("modalBody").innerHTML = `<div class="p-4 text-center">Tidak ada data detail ditemukan</div>`; new bootstrap.Modal('#modalDetail').show(); return; } 
-            const groups = {}; 
-            data.forEach(d=>{ const key = `${d.PUSKESMAS}_${d["DESA/KELURAHAN"]}`; if(!groups[key]) groups[key]={ Pusk:d.PUSKESMAS, Desa:d["DESA/KELURAHAN"], ds:0, sk:0, kr:0, bbn:0, rl:0, sp:0, pd:0, tbn:0, tg:0, gb:0, gk:0, gn:0, rgl:0, gl:0, ob:0, count:0 }; const g = groups[key]; g.ds+=toNumber(d["D/S"]); g.sk+=toNumber(d["Sangat Kurang"]); g.kr+=toNumber(d["Kurang"]); g.bbn+=toNumber(d["Berat Badan Normal"]); g.rl+=toNumber(d["Risiko Lebih"]); g.sp+=toNumber(d["Sangat Pendek"]); g.pd+=toNumber(d["Pendek"]); g.tbn+=toNumber(d.Normal); g.tg+=toNumber(d.Tinggi); g.gb+=toNumber(d["Gizi Buruk"]); g.gk+=toNumber(d["Gizi Kurang"]); g.gn+=toNumber(d.Normal_1); g.rgl+=toNumber(d["Risiko Gizi Lebih"]); g.gl+=toNumber(d["Gizi Lebih"]); g.ob+=toNumber(d.Obesitas); g.count++; }); 
-            const uniqueDesa = Object.values(groups); 
-            if(uniqueDesa.length===1){ 
-                const v=uniqueDesa[0]; 
-                const dsPercentage = (v.ds/v.count*100).toFixed(1)+"%"; 
-                const cardViewHtml = `<div class="px-3 pb-3">
-                    <div class="alert alert-light border-0 bg-light d-flex justify-content-between align-items-center mb-4 rounded-4">
-                        <div><small class="text-muted d-block fw-bold" style="font-size:10px;">Puskesmas</small><span class="fw-bold text-primary">${v.Pusk}</span></div>
-                        <div class="text-end"><small class="text-muted d-block fw-bold">Partisipasi (D/S)</small><span class="badge bg-primary fs-6">${dsPercentage}</span></div>
-                    </div>
-                    <div class="modal-category-title"><i class="bi bi-scale"></i> Berat Badan menurut Umur (BB/U)</div>
-                    <div class="row g-3 mb-4">
-                        ${renderIndicatorCard("Sangat Kurang", v.sk, "bi-thermometer-low")}
-                        ${renderIndicatorCard("Kurang", v.kr, "bi-thermometer-half")}
-                        ${renderIndicatorCard("Normal", v.bbn, "bi-check-circle")}
-                        ${renderIndicatorCard("Risiko Lebih", v.rl, "bi-exclamation-triangle")}
-                    </div>
-                    <div class="modal-category-title"><i class="bi bi-rulers"></i> Tinggi Badan menurut Umur (TB/U)</div>
-                    <div class="row g-3 mb-4">
-                        ${renderIndicatorCard("Sangat Pendek", v.sp, "bi-chevron-double-down")}
-                        ${renderIndicatorCard("Pendek", v.pd, "bi-chevron-down")}
-                        ${renderIndicatorCard("Normal", v.tbn, "bi-check-circle")}
-                        ${renderIndicatorCard("Tinggi", v.tg, "bi-chevron-up")}
-                    </div>
-                    <div class="modal-category-title"><i class="bi bi-heart-pulse"></i> Status Gizi (BB/TB)</div>
-                    <div class="row g-3">
-                        ${renderIndicatorCard("Gizi Buruk", v.gb, "bi-shield-x")}
-                        ${renderIndicatorCard("Gizi Kurang", v.gk, "bi-shield-exclamation")}
-                        ${renderIndicatorCard("Gizi Normal", v.gn, "bi-shield-check")}
-                        ${renderIndicatorCard("Risiko Lebih", v.rgl, "bi-plus-circle")}
-                        ${renderIndicatorCard("Gizi Lebih", v.gl, "bi-plus-square")}
-                        ${renderIndicatorCard("Obesitas", v.ob, "bi-person-fill-exclamation")}
-                    </div>
-                </div>`; 
-                document.getElementById("modalBody").innerHTML = cardViewHtml; 
-            } else { 
-                const tableHtml = `<div class="table-responsive"><table class="table table-bordered table-hover align-middle mb-0"><thead class="bg-light"><tr style="font-size:11px;"><th>Puskesmas</th><th>Desa</th><th>D/S (%)</th><th>S.Kurang</th><th>Kurang</th><th>Normal</th><th>R.Lebih</th><th>S.Pendek</th><th>Pendek</th><th>Normal</th><th>Tinggi</th><th>G.Buruk</th><th>G.Kurang</th><th>G.Normal</th><th>R.G.Lebih</th><th>G.Lebih</th><th>Obest.</th></tr></thead><tbody>${uniqueDesa.sort((a,b)=> a.Desa.localeCompare(b.Desa)).map(g => `<tr><td class="small">${g.Pusk}</td><td class="fw-bold">${g.Desa}</td><td>${(g.ds/g.count*100).toFixed(1)}%</td><td>${g.sk}</td><td>${g.kr}</td><td>${g.bbn}</td><td>${g.rl}</td><td>${g.sp}</td><td>${g.pd}</td><td>${g.tbn}</td><td>${g.tg}</td><td>${g.gb}</td><td>${g.gk}</td><td>${g.gn}</td><td>${g.rgl}</td><td>${g.gl}</td><td>${g.ob}</td></tr>`).join("")}</tbody></table></div>`; 
-                document.getElementById("modalBody").innerHTML = tableHtml; 
-            } 
-            new bootstrap.Modal('#modalDetail').show(); 
-        }
-        
-        function initMap() { mapInstance = L.map('map').setView([-8.1, 112.2], 10); L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; CartoDB' }).addTo(mapInstance); }
-        function initChart() { chartInstance = new Chart(document.getElementById('chartGizi'), { type: 'bar', data: { labels: ['2024','2025','2026'], datasets: [] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: "#eef2f6" } } } } }); }
-        function getColor(p) { return p >= 30 ? "#2c3e66" : p >= 20 ? "#3b6e9e" : p >= 15 ? "#5b8cbd" : p >= 10 ? "#8bb3d4" : p > 0 ? "#bdd4e7" : "#e6f0fa"; }
-        function getKategori(nama, p) { if (nama === "stunting") return p < 10 ? "sr" : (p < 15 ? "r" : (p < 20 ? "m" : (p < 30 ? "t" : "st"))); if (nama === "underweight") return p < 5 ? "r" : (p < 10 ? "m" : (p < 15 ? "t" : "st")); return p < 2.5 ? "sr" : (p < 5 ? "r" : (p < 10 ? "m" : (p < 15 ? "t" : "st"))); }
-        function normal(t) { return t ? t.toLowerCase().replace(/desa|kelurahan|\s/g, '').trim() : ""; }
-        function toNumber(v) { if (v === "" || v === null || v === undefined) return 0; const parsed = parseFloat(String(v).replace(/[%,]/g, m => m === ',' ? '.' : '')); return isNaN(parsed) ? 0 : parsed; }
-        function cekBulanTerakhir(th) { const bulanList = ["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"]; let res = ""; bulanList.forEach(b => { if (semuaData.some(d => d.Tahun == th && d.Bulan == b && d.Level == "Kabupaten" && toNumber(d["%Stunting"]) > 0)) res = b; }); return res; }
-        document.addEventListener("DOMContentLoaded", initApp);
-    </script>
+    document.addEventListener("DOMContentLoaded", initApp);
+</script>
 </body>
 </html>
